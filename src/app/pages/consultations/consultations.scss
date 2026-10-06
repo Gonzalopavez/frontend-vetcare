@@ -1,0 +1,320 @@
+.consultations-page {
+  max-width: 1200px;
+
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: flex-start;
+
+  gap: 24px;
+
+  margin-bottom: 28px;
+}
+
+.page-header h1 {
+  margin:
+    4px 0
+    8px;
+
+  font-size: 30px;
+}
+
+.page-header p {
+  margin: 0;
+
+  color: #6b7280;
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  color: #2563eb !important;
+}
+
+
+/* FILTROS */
+
+.filters {
+  display: grid;
+
+  grid-template-columns:
+    minmax(180px, 1fr)
+    minmax(160px, 1fr)
+    minmax(160px, 1fr)
+    auto;
+
+  gap: 16px;
+
+  align-items: end;
+
+  padding: 22px;
+
+  margin-bottom: 24px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+
+  background: #ffffff;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.filter-field label {
+  font-size: 13px;
+  font-weight: 700;
+
+  color: #374151;
+}
+
+.filter-field select,
+.filter-field input {
+  min-height: 42px;
+
+  padding: 9px 11px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+
+  font: inherit;
+
+  background: #ffffff;
+}
+
+.filter-field select:focus,
+.filter-field input:focus {
+  outline: 2px solid #bfdbfe;
+
+  border-color: #2563eb;
+}
+
+.filter-actions {
+  display: flex;
+
+  gap: 8px;
+}
+
+.primary-button,
+.secondary-button {
+  min-height: 42px;
+
+  padding: 10px 15px;
+
+  border-radius: 9px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.primary-button {
+  border: 1px solid #2563eb;
+
+  color: #ffffff;
+
+  background: #2563eb;
+}
+
+.primary-button:hover {
+  background: #1d4ed8;
+}
+
+.secondary-button {
+  border: 1px solid #d1d5db;
+
+  color: #374151;
+
+  background: #ffffff;
+}
+
+.secondary-button:hover {
+  background: #f3f4f6;
+}
+
+
+/* TABLA */
+
+.table-card {
+  overflow: hidden;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 14px
+    rgba(0, 0, 0, 0.04);
+}
+
+.table-summary {
+  padding: 16px 20px;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  font-size: 14px;
+
+  color: #6b7280;
+}
+
+.table-summary strong {
+  color: #111827;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 16px 20px;
+
+  text-align: left;
+
+  border-bottom: 1px solid #f3f4f6;
+}
+
+th {
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  color: #6b7280;
+
+  background: #f9fafb;
+}
+
+td {
+  font-size: 14px;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+
+/* ESTADOS */
+
+.status-badge {
+  display: inline-block;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  color: #374151;
+
+  background: #f3f4f6;
+}
+
+.status-badge[data-status="SOLICITADA"] {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.status-badge[data-status="CONFIRMADA"] {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.status-badge[data-status="EN_ESPERA"] {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.status-badge[data-status="EN_CONSULTA"] {
+  color: #6d28d9;
+  background: #ede9fe;
+}
+
+.status-badge[data-status="CERRADA"] {
+  color: #374151;
+  background: #e5e7eb;
+}
+
+.status-badge[data-status="CANCELADA"] {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+
+/* ESTADOS DE PANTALLA */
+
+.state-card {
+  padding: 48px 28px;
+
+  text-align: center;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+
+  background: #ffffff;
+}
+
+.state-card h2 {
+  margin-top: 0;
+}
+
+.state-card p {
+  color: #6b7280;
+}
+
+.error-state {
+  border-color: #fecaca;
+
+  background: #fffafa;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+  .filters {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .filter-actions {
+    grid-column:
+      1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .filters {
+    grid-template-columns:
+      1fr;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+  }
+}

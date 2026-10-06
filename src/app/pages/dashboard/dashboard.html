@@ -1,0 +1,383 @@
+<section class="dashboard">
+
+  @if (authState.currentUser(); as user) {
+
+    <header class="dashboard-header">
+
+      <div>
+
+        <p class="eyebrow">
+          Panel principal
+        </p>
+
+        <h1>
+          Bienvenido a VetCare
+        </h1>
+
+        <p class="welcome">
+          {{ user.name ?? user.preferred_username }}
+        </p>
+
+      </div>
+
+      <div class="role-badge">
+
+        {{ authState.primaryRole() ?? 'Sin rol' }}
+
+      </div>
+
+    </header>
+
+    <section class="profile-summary">
+
+      <div>
+
+        <span class="label">
+          Usuario
+        </span>
+
+        <strong>
+          {{ user.preferred_username ?? user.name }}
+        </strong>
+
+      </div>
+
+      <div>
+
+        <span class="label">
+          Estado
+        </span>
+
+        <strong>
+          Autenticado
+        </strong>
+
+      </div>
+
+      <div>
+
+        <span class="label">
+          Rol
+        </span>
+
+        <strong>
+          {{ authState.primaryRole() ?? 'Sin rol asignado' }}
+        </strong>
+
+      </div>
+
+    </section>
+
+    <section class="modules">
+
+      <div class="section-heading">
+
+        <h2>
+          Módulos disponibles
+        </h2>
+
+        <p>
+          Las opciones mostradas dependen de los permisos
+          asignados a tu cuenta.
+        </p>
+
+      </div>
+
+
+      @if (authState.hasRole('Admin')) {
+
+        <div class="role-section">
+
+          <h3>
+            Administración
+          </h3>
+
+          <div class="cards">
+
+            <article class="action-card">
+
+              <h4>
+                Consultas veterinarias
+              </h4>
+
+              <p>
+                Consultar las atenciones registradas
+                en VetCare.
+              </p>
+
+              <span>
+                Consultas.Leer
+              </span>
+
+            </article>
+
+
+            <article class="action-card">
+
+              <h4>
+                Gestionar estados
+              </h4>
+
+              <p>
+                Administrar el avance del flujo
+                de atención de las consultas.
+              </p>
+
+              <span>
+                Consultas.Escribir
+              </span>
+
+            </article>
+
+
+            <article class="action-card">
+
+              <h4>
+                Catálogo
+              </h4>
+
+              <p>
+                Consultar prestaciones, precios,
+                boxes y cupos.
+              </p>
+
+              <span>
+                Catalogo.Leer
+              </span>
+
+            </article>
+
+
+            <article class="action-card">
+
+              <h4>
+                Administrar catálogo
+              </h4>
+
+              <p>
+                Crear o modificar prestaciones,
+                precios y disponibilidad.
+              </p>
+
+              <span>
+                Catalogo.Escribir
+              </span>
+
+            </article>
+
+          </div>
+
+        </div>
+
+      }
+
+
+      @if (authState.hasRole('Operador')) {
+
+        <div class="role-section">
+
+          <h3>
+            Operaciones
+          </h3>
+
+          <div class="cards">
+
+            <article class="action-card">
+
+              <h4>
+                Consultas veterinarias
+              </h4>
+
+              <p>
+                Revisar las consultas disponibles
+                para la operación.
+              </p>
+
+              <span>
+                Consultas.Leer
+              </span>
+
+            </article>
+
+
+            <article class="action-card">
+
+              <h4>
+                Nueva consulta
+              </h4>
+
+              <p>
+                Registrar una nueva solicitud
+                de atención veterinaria.
+              </p>
+
+              <span>
+                Consultas.Escribir
+              </span>
+
+            </article>
+
+
+            <article class="action-card">
+
+              <h4>
+                Gestionar estados
+              </h4>
+
+              <p>
+                Gestionar el flujo de atención
+                de las consultas.
+              </p>
+
+              <span>
+                Consultas.Escribir
+              </span>
+
+            </article>
+
+
+            <article class="action-card">
+
+              <h4>
+                Catálogo
+              </h4>
+
+              <p>
+                Consultar las prestaciones
+                disponibles.
+              </p>
+
+              <span>
+                Catalogo.Leer
+              </span>
+
+            </article>
+
+          </div>
+
+        </div>
+
+      }
+
+
+      @if (authState.hasRole('Cliente')) {
+
+        <div class="role-section">
+
+          <h3>
+            Mi atención veterinaria
+          </h3>
+
+          <div class="cards">
+
+            <article class="action-card">
+
+              <h4>
+                Mis consultas
+              </h4>
+
+              <p>
+                Revisar tus consultas veterinarias
+                y su estado actual.
+              </p>
+
+              <span>
+                Consultas.Leer
+              </span>
+
+            </article>
+
+
+            <article class="action-card">
+
+              <h4>
+                Nueva consulta
+              </h4>
+
+              <p>
+                Solicitar una nueva atención
+                veterinaria.
+              </p>
+
+              <span>
+                Consultas.Escribir
+              </span>
+
+            </article>
+
+          </div>
+
+        </div>
+
+      }
+
+
+      @if (authState.hasRole('Auditor')) {
+
+        <div class="role-section">
+
+          <h3>
+            Auditoría
+          </h3>
+
+          <div class="cards">
+
+            <article class="action-card">
+
+              <h4>
+                Timeline clínico
+              </h4>
+
+              <p>
+                Funcionalidad contemplada para
+                una etapa posterior del proyecto.
+              </p>
+
+              <span>
+                Próximamente
+              </span>
+
+            </article>
+
+          </div>
+
+        </div>
+
+      }
+
+
+      @if (
+        !authState.hasAnyRole(
+          'Admin',
+          'Operador',
+          'Cliente',
+          'Auditor'
+        )
+      ) {
+
+        <div class="no-role">
+
+          <h3>
+            Sin rol de VetCare
+          </h3>
+
+          <p>
+            Tu cuenta está autenticada, pero no posee
+            un rol habilitado dentro de la aplicación.
+          </p>
+
+        </div>
+
+      }
+
+    </section>
+
+  } @else {
+
+    <p>
+      Cargando información del usuario...
+    </p>
+
+  }
+
+</section>

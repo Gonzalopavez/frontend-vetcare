@@ -1,0 +1,288 @@
+:host {
+  display: block;
+
+  min-height: 100vh;
+
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: #1f2937;
+}
+
+
+/* LOGIN */
+
+.login-page {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #eff6ff,
+      #f8fafc
+    );
+}
+
+.login-card {
+  width: 100%;
+  max-width: 460px;
+
+  padding: 48px;
+
+  text-align: center;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.08);
+}
+
+.login-card h1 {
+  margin: 18px 0 12px;
+
+  font-size: 30px;
+}
+
+.login-card p {
+  margin-bottom: 30px;
+
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+.brand {
+  font-size: 28px;
+  font-weight: 800;
+
+  color: #2563eb;
+}
+
+.primary-button {
+  width: 100%;
+
+  padding: 13px 20px;
+
+  border: 0;
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  color: #ffffff;
+
+  background: #2563eb;
+}
+
+.primary-button:hover {
+  background: #1d4ed8;
+}
+
+
+/* ESTRUCTURA PRINCIPAL */
+
+.app-layout {
+  min-height: 100vh;
+
+  background: #f8fafc;
+}
+
+.topbar {
+  height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 30px;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  background: #ffffff;
+}
+
+.brand-link {
+  font-size: 24px;
+  font-weight: 800;
+
+  text-decoration: none;
+
+  color: #2563eb;
+}
+
+.user-information {
+  display: flex;
+  align-items: center;
+
+  gap: 20px;
+}
+
+.user-text {
+  display: flex;
+  flex-direction: column;
+
+  text-align: right;
+}
+
+.user-text strong {
+  font-size: 14px;
+}
+
+.user-text span {
+  margin-top: 2px;
+
+  font-size: 12px;
+
+  color: #6b7280;
+}
+
+.logout-button {
+  padding: 9px 14px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  background: #ffffff;
+
+  color: #374151;
+}
+
+.logout-button:hover {
+  background: #f3f4f6;
+}
+
+
+/* CUERPO */
+
+.application-body {
+  display: flex;
+
+  min-height:
+    calc(100vh - 72px);
+}
+
+
+/* SIDEBAR */
+
+.sidebar {
+  width: 240px;
+
+  padding: 24px 16px;
+
+  border-right: 1px solid #e5e7eb;
+
+  background: #ffffff;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+.navigation a {
+  padding: 12px 14px;
+
+  border-radius: 9px;
+
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #4b5563;
+}
+
+.navigation a:hover {
+  color: #1d4ed8;
+
+  background: #eff6ff;
+}
+
+.navigation a.active {
+  color: #1d4ed8;
+
+  background: #dbeafe;
+}
+
+
+/* CONTENIDO */
+
+.content {
+  flex: 1;
+
+  min-width: 0;
+
+  padding: 28px;
+}
+
+.loading-state {
+  padding: 32px;
+
+  text-align: center;
+
+  color: #6b7280;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
+
+  .topbar {
+    height: auto;
+
+    padding: 18px;
+
+    gap: 16px;
+  }
+
+  .user-information {
+    gap: 10px;
+  }
+
+  .user-text {
+    display: none;
+  }
+
+  .application-body {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: auto;
+
+    border-right: 0;
+    border-bottom: 1px solid #e5e7eb;
+
+    overflow-x: auto;
+  }
+
+  .navigation {
+    flex-direction: row;
+
+    min-width: max-content;
+  }
+
+  .content {
+    padding: 18px;
+  }
+}

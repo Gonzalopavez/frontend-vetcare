@@ -1,0 +1,274 @@
+<section class="consultations-page">
+
+  <header class="page-header">
+
+    <div>
+
+      <p class="eyebrow">
+        Consultas veterinarias
+      </p>
+
+      <h1>
+        @if (authState.hasRole('Cliente')) {
+          Mis consultas
+        } @else {
+          Consultas veterinarias
+        }
+      </h1>
+
+      <p>
+        @if (authState.hasRole('Cliente')) {
+
+          Revisa tus solicitudes de atención
+          veterinaria y su estado actual.
+
+        } @else {
+
+          Consulta y filtra las atenciones
+          registradas en VetCare.
+
+        }
+      </p>
+
+    </div>
+
+  </header>
+
+
+  <section class="filters">
+
+    <div class="filter-field">
+
+      <label for="status">
+        Estado
+      </label>
+
+      <select
+        id="status"
+        [(ngModel)]="filterStatus">
+
+        <option value="">
+          Todos los estados
+        </option>
+
+        @for (
+          status of availableStatuses;
+          track status
+        ) {
+
+          <option [value]="status">
+            {{ formatStatus(status) }}
+          </option>
+
+        }
+
+      </select>
+
+    </div>
+
+
+    <div class="filter-field">
+
+      <label for="from">
+        Desde
+      </label>
+
+      <input
+        id="from"
+        type="date"
+        [(ngModel)]="filterFrom">
+
+    </div>
+
+
+    <div class="filter-field">
+
+      <label for="to">
+        Hasta
+      </label>
+
+      <input
+        id="to"
+        type="date"
+        [(ngModel)]="filterTo">
+
+    </div>
+
+
+    <div class="filter-actions">
+
+      <button
+        type="button"
+        class="primary-button"
+        (click)="loadConsultations()">
+
+        Aplicar filtros
+
+      </button>
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="clearFilters()">
+
+        Limpiar
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  @if (loading()) {
+
+    <section class="state-card">
+
+      <p>
+        Cargando consultas...
+      </p>
+
+    </section>
+
+  } @else if (errorMessage()) {
+
+    <section class="state-card error-state">
+
+      <h2>
+        No fue posible cargar las consultas
+      </h2>
+
+      <p>
+        {{ errorMessage() }}
+      </p>
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="loadConsultations()">
+
+        Reintentar
+
+      </button>
+
+    </section>
+
+  } @else if (consultations().length === 0) {
+
+    <section class="state-card">
+
+      <h2>
+        No hay consultas disponibles
+      </h2>
+
+      <p>
+        No se encontraron consultas que coincidan
+        con los criterios seleccionados.
+      </p>
+
+    </section>
+
+  } @else {
+
+    <section class="table-card">
+
+      <div class="table-summary">
+
+        <strong>
+          {{ consultations().length }}
+        </strong>
+
+        @if (consultations().length === 1) {
+          consulta encontrada
+        } @else {
+          consultas encontradas
+        }
+
+      </div>
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                ID
+              </th>
+
+              <th>
+                Mascota
+              </th>
+
+              <th>
+                Prestación
+              </th>
+
+              <th>
+                Fecha solicitada
+              </th>
+
+              <th>
+                Estado
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            @for (
+              consultation of consultations();
+              track consultation.id
+            ) {
+
+              <tr>
+
+                <td>
+                  #{{ consultation.id }}
+                </td>
+
+                <td>
+                  <strong>
+                    {{ consultation.petName }}
+                  </strong>
+                </td>
+
+                <td>
+                  {{ consultation.serviceName }}
+                </td>
+
+                <td>
+                  {{ consultation.requestedAt }}
+                </td>
+
+                <td>
+
+                  <span
+                    class="status-badge"
+                    [attr.data-status]="consultation.status">
+
+                    {{ formatStatus(consultation.status) }}
+
+                  </span>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  }
+
+</section>
