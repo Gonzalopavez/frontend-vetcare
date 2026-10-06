@@ -1,12 +1,158 @@
-<section>
+<section class="catalog-page">
 
-  <h1>
-    Catálogo veterinario
-  </h1>
+  <header class="page-header">
 
-  <p>
-    Aquí se mostrarán las prestaciones,
-    precios y disponibilidad de VetCare.
-  </p>
+    <div>
+
+      <p class="eyebrow">
+        Prestaciones veterinarias
+      </p>
+
+      <h1>
+        Catálogo
+      </h1>
+
+      <p>
+        Consulta las prestaciones disponibles
+        actualmente en VetCare.
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="loading()"
+      (click)="loadServices()">
+
+      Actualizar
+
+    </button>
+
+  </header>
+
+
+  @if (loading()) {
+
+    <section class="state-card">
+
+      <p>
+        Cargando catálogo...
+      </p>
+
+    </section>
+
+  } @else if (errorMessage()) {
+
+    <section class="state-card error-state">
+
+      <h2>
+        No fue posible cargar el catálogo
+      </h2>
+
+      <p>
+        {{ errorMessage() }}
+      </p>
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="loadServices()">
+
+        Reintentar
+
+      </button>
+
+    </section>
+
+  } @else if (services().length === 0) {
+
+    <section class="state-card">
+
+      <h2>
+        No hay prestaciones disponibles
+      </h2>
+
+      <p>
+        Actualmente no existen servicios veterinarios
+        registrados en el catálogo.
+      </p>
+
+    </section>
+
+  } @else {
+
+    <section class="catalog-grid">
+
+      @for (
+        service of services();
+        track service.id
+      ) {
+
+        <article class="service-card">
+
+          <div class="service-header">
+
+            <span class="service-id">
+              Servicio #{{ service.id }}
+            </span>
+
+            @if (service.availableSlots > 0) {
+
+              <span class="availability available">
+                Disponible
+              </span>
+
+            } @else {
+
+              <span class="availability unavailable">
+                Sin cupos
+              </span>
+
+            }
+
+          </div>
+
+
+          <h2>
+            {{ service.name }}
+          </h2>
+
+
+          <div class="service-info">
+
+            <div>
+
+              <span>
+                Precio
+              </span>
+
+              <strong>
+                {{ formatPrice(service.price) }}
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                Cupos disponibles
+              </span>
+
+              <strong>
+                {{ service.availableSlots }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </article>
+
+      }
+
+    </section>
+
+  }
 
 </section>

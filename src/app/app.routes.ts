@@ -19,7 +19,7 @@ import {
 } from './pages/consultation-create/consultation-create';
 
 import {
-  ConsultationStatus
+  ConsultationStatusPage
 } from './pages/consultation-status/consultation-status';
 
 import {
@@ -46,6 +46,7 @@ import {
   roleGuard
 } from './core/auth/role.guard';
 
+
 export const routes: Routes = [
 
   {
@@ -58,20 +59,6 @@ export const routes: Routes = [
     ]
   },
 
-  {
-    path: 'consultations',
-
-    component: Consultations,
-
-    canActivate: [
-      MsalGuard,
-      roleGuard(
-        'Admin',
-        'Operador',
-        'Cliente'
-      )
-    ]
-  },
 
   {
     path: 'consultations/new',
@@ -80,6 +67,7 @@ export const routes: Routes = [
 
     canActivate: [
       MsalGuard,
+
       roleGuard(
         'Operador',
         'Cliente'
@@ -87,19 +75,39 @@ export const routes: Routes = [
     ]
   },
 
+
   {
     path: 'consultations/status',
 
-    component: ConsultationStatus,
+    component: ConsultationStatusPage,
 
     canActivate: [
       MsalGuard,
+
       roleGuard(
         'Admin',
         'Operador'
       )
     ]
   },
+
+
+  {
+    path: 'consultations',
+
+    component: Consultations,
+
+    canActivate: [
+      MsalGuard,
+
+      roleGuard(
+        'Admin',
+        'Operador',
+        'Cliente'
+      )
+    ]
+  },
+
 
   {
     path: 'catalog',
@@ -108,12 +116,14 @@ export const routes: Routes = [
 
     canActivate: [
       MsalGuard,
+
       roleGuard(
         'Admin',
         'Operador'
       )
     ]
   },
+
 
   {
     path: 'admin/catalog',
@@ -122,11 +132,13 @@ export const routes: Routes = [
 
     canActivate: [
       MsalGuard,
+
       roleGuard(
         'Admin'
       )
     ]
   },
+
 
   {
     path: 'audit',
@@ -135,11 +147,13 @@ export const routes: Routes = [
 
     canActivate: [
       MsalGuard,
+
       roleGuard(
         'Auditor'
       )
     ]
   },
+
 
   {
     path: 'protected',
@@ -151,11 +165,13 @@ export const routes: Routes = [
     ]
   },
 
+
   {
     path: 'forbidden',
 
     component: Forbidden
   },
+
 
   {
     path: '',
@@ -165,9 +181,11 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
 
+
   {
     path: '**',
 
     redirectTo: 'dashboard'
   }
+
 ];

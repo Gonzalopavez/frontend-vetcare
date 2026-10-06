@@ -6,16 +6,11 @@ export type ConsultationStatus =
   | 'CERRADA'
   | 'CANCELADA';
 
-
 export interface Consultation {
-
   id: number;
-
   petName: string;
-
-  serviceName: string;
-
+  serviceId: number;
   requestedAt: string;
-
+  observations: string | null;
   status: ConsultationStatus;
 }

@@ -1,12 +1,315 @@
-<section>
+<section class="create-page">
 
-  <h1>
-    Nueva consulta
-  </h1>
+  <header class="page-header">
 
-  <p>
-    Desde esta sección se podrá registrar
-    una nueva solicitud de atención veterinaria.
-  </p>
+    <div>
+
+      <p class="eyebrow">
+        Atención veterinaria
+      </p>
+
+      <h1>
+        Nueva consulta
+      </h1>
+
+      <p>
+        Registra una nueva solicitud de atención
+        veterinaria en VetCare.
+      </p>
+
+    </div>
+
+  </header>
+
+
+  @if (createdConsultation(); as consultation) {
+
+    <section class="success-card">
+
+      <h2>
+        Consulta creada correctamente
+      </h2>
+
+      <p>
+        La solicitud fue registrada con éxito.
+      </p>
+
+      <div class="success-details">
+
+        <div>
+
+          <span>
+            ID
+          </span>
+
+          <strong>
+            #{{ consultation.id }}
+          </strong>
+
+        </div>
+
+        <div>
+
+          <span>
+            Mascota
+          </span>
+
+          <strong>
+            {{ consultation.petName }}
+          </strong>
+
+        </div>
+
+        <div>
+
+          <span>
+            Prestación
+          </span>
+
+          <strong>
+            {{ getServiceName(consultation.serviceId) }}
+          </strong>
+
+        </div>
+
+        <div>
+
+          <span>
+            Estado
+          </span>
+
+          <strong>
+            {{ consultation.status }}
+          </strong>
+
+        </div>
+
+      </div>
+
+      <a
+        routerLink="/consultations"
+        class="secondary-link">
+
+        Ver consultas
+
+      </a>
+
+    </section>
+
+  }
+
+
+  @if (errorMessage()) {
+
+    <section class="error-card">
+
+      <strong>
+        No fue posible crear la consulta
+      </strong>
+
+      <p>
+        {{ errorMessage() }}
+      </p>
+
+    </section>
+
+  }
+
+
+  <form
+    class="consultation-form"
+    [formGroup]="form"
+    (ngSubmit)="submit()">
+
+
+    <div class="form-section">
+
+      <h2>
+        Datos de la consulta
+      </h2>
+
+      <p>
+        Completa la información necesaria
+        para registrar la solicitud.
+      </p>
+
+
+      <div class="form-grid">
+
+
+        <div class="form-field">
+
+          <label for="petName">
+            Nombre de la mascota
+          </label>
+
+          <input
+            id="petName"
+            type="text"
+            formControlName="petName"
+            placeholder="Ej: Luna"
+            maxlength="100">
+
+          @if (hasError('petName')) {
+
+            <small class="field-error">
+              Ingresa un nombre válido para la mascota.
+            </small>
+
+          }
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label for="serviceId">
+            Prestación veterinaria
+          </label>
+
+          @if (loadingCatalog()) {
+
+            <div class="catalog-state">
+              Cargando prestaciones...
+            </div>
+
+          } @else if (catalogError()) {
+
+            <div class="catalog-error">
+
+              <span>
+                {{ catalogError() }}
+              </span>
+
+              <button
+                type="button"
+                class="retry-button"
+                (click)="loadCatalog()">
+
+                Reintentar
+
+              </button>
+
+            </div>
+
+          } @else {
+
+            <select
+              id="serviceId"
+              formControlName="serviceId">
+
+              <option [ngValue]="0">
+                Selecciona una prestación
+              </option>
+
+              @for (
+                service of catalogServices();
+                track service.id
+              ) {
+
+                <option
+                  [ngValue]="service.id">
+
+                  {{ service.name }}
+                  —
+                  {{ formatPrice(service.price) }}
+                  —
+                  {{ service.availableSlots }} cupos
+
+                </option>
+
+              }
+
+            </select>
+
+          }
+
+          @if (hasError('serviceId')) {
+
+            <small class="field-error">
+              Selecciona una prestación veterinaria.
+            </small>
+
+          }
+
+        </div>
+
+
+        <div class="form-field full-width">
+
+          <label for="requestedAt">
+            Fecha y hora solicitada
+          </label>
+
+          <input
+            id="requestedAt"
+            type="datetime-local"
+            formControlName="requestedAt">
+
+          @if (hasError('requestedAt')) {
+
+            <small class="field-error">
+              Selecciona una fecha y hora.
+            </small>
+
+          }
+
+        </div>
+
+
+        <div class="form-field full-width">
+
+          <label for="observations">
+            Observaciones
+          </label>
+
+          <textarea
+            id="observations"
+            formControlName="observations"
+            rows="5"
+            placeholder="Describe brevemente el motivo de la consulta (opcional)">
+          </textarea>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="form-actions">
+
+      <a
+        routerLink="/consultations"
+        class="cancel-button">
+
+        Cancelar
+
+      </a>
+
+      <button
+        type="submit"
+        class="primary-button"
+        [disabled]="
+          submitting() ||
+          loadingCatalog() ||
+          catalogServices().length === 0
+        ">
+
+        @if (submitting()) {
+
+          Registrando...
+
+        } @else {
+
+          Crear consulta
+
+        }
+
+      </button>
+
+    </div>
+
+  </form>
 
 </section>

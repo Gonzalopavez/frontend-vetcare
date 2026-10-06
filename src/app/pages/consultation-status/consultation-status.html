@@ -1,13 +1,274 @@
-<section>
+<section class="status-page">
 
-  <h1>
-    Gestión de estados
-  </h1>
+  <header class="page-header">
 
-  <p>
-    Desde esta sección Admin y Operador
-    podrán gestionar el estado de las consultas
-    veterinarias.
-  </p>
+    <div>
+
+      <p class="eyebrow">
+        Operación veterinaria
+      </p>
+
+      <h1>
+        Gestión de estados
+      </h1>
+
+      <p>
+        Administra el avance de las consultas
+        veterinarias según el flujo operativo de VetCare.
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="loading()"
+      (click)="loadData()">
+
+      Actualizar
+
+    </button>
+
+  </header>
+
+
+  @if (successMessage()) {
+
+    <section class="success-message">
+
+      {{ successMessage() }}
+
+    </section>
+
+  }
+
+
+  @if (errorMessage()) {
+
+    <section class="error-message">
+
+      <div>
+
+        <strong>
+          No fue posible completar la operación
+        </strong>
+
+        <p>
+          {{ errorMessage() }}
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="loadData()">
+
+        Reintentar
+
+      </button>
+
+    </section>
+
+  }
+
+
+  @if (loading()) {
+
+    <section class="state-card">
+
+      <p>
+        Cargando consultas...
+      </p>
+
+    </section>
+
+  } @else if (
+    !errorMessage() &&
+    consultations().length === 0
+  ) {
+
+    <section class="state-card">
+
+      <h2>
+        No hay consultas disponibles
+      </h2>
+
+      <p>
+        Actualmente no existen consultas
+        para gestionar.
+      </p>
+
+    </section>
+
+  } @else if (!errorMessage()) {
+
+    <section class="consultations-list">
+
+      @for (
+        consultation of consultations();
+        track consultation.id
+      ) {
+
+        <article class="consultation-card">
+
+          <div class="consultation-main">
+
+            <div class="consultation-heading">
+
+              <div>
+
+                <span class="consultation-id">
+                  Consulta #{{ consultation.id }}
+                </span>
+
+                <h2>
+                  {{ consultation.petName }}
+                </h2>
+
+              </div>
+
+              <span
+                class="status-badge"
+                [attr.data-status]="consultation.status">
+
+                {{ formatStatus(consultation.status) }}
+
+              </span>
+
+            </div>
+
+
+            <div class="consultation-details">
+
+              <div>
+
+                <span>
+                  Prestación
+                </span>
+
+                <strong>
+                  {{ getServiceName(consultation.serviceId) }}
+                </strong>
+
+              </div>
+
+              <div>
+
+                <span>
+                  Fecha solicitada
+                </span>
+
+                <strong>
+                  {{ formatDateTime(consultation.requestedAt) }}
+                </strong>
+
+              </div>
+
+              <div>
+
+                <span>
+                  Observaciones
+                </span>
+
+                <strong>
+                  {{ consultation.observations || 'Sin observaciones' }}
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="status-action">
+
+            @if (
+              isFinalStatus(consultation.status)
+            ) {
+
+              <div class="final-state">
+
+                Estado final
+
+              </div>
+
+            } @else {
+
+              <label
+                [for]="'status-' + consultation.id">
+
+                Cambiar estado
+
+              </label>
+
+              <select
+                [id]="'status-' + consultation.id"
+                #statusSelect
+                [disabled]="
+                  updatingId() === consultation.id
+                ">
+
+                <option value="">
+                  Selecciona un estado
+                </option>
+
+                @for (
+                  status of getValidNextStatuses(
+                    consultation.status
+                  );
+                  track status
+                ) {
+
+                  <option [value]="status">
+
+                    {{ formatStatus(status) }}
+
+                  </option>
+
+                }
+
+              </select>
+
+              <button
+                type="button"
+                class="update-button"
+                [disabled]="
+                  !statusSelect.value ||
+                  updatingId() === consultation.id
+                "
+                (click)="
+                  updateStatus(
+                    consultation,
+                    statusSelect.value
+                  )
+                ">
+
+                @if (
+                  updatingId() === consultation.id
+                ) {
+
+                  Actualizando...
+
+                } @else {
+
+                  Confirmar cambio
+
+                }
+
+              </button>
+
+            }
+
+          </div>
+
+        </article>
+
+      }
+
+    </section>
+
+  }
 
 </section>

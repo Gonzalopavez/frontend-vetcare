@@ -1,18 +1,415 @@
-<section>
+<section class="admin-catalog-page">
 
-  <h1>
-    Administración del catálogo
-  </h1>
+  <header class="page-header">
 
-  <p>
-    Desde esta sección el usuario administrador
-    podrá gestionar las prestaciones,
-    precios y disponibilidad de VetCare.
-  </p>
+    <div>
 
-  <p>
-    La integración con el microservicio de catálogo
-    será incorporada posteriormente.
-  </p>
+      <p class="eyebrow">
+        Administración
+      </p>
+
+      <h1>
+        Gestión de catálogo
+      </h1>
+
+      <p>
+        Crea prestaciones veterinarias y administra
+        sus precios y cupos disponibles.
+      </p>
+
+    </div>
+
+  </header>
+
+
+  @if (successMessage()) {
+
+    <section class="success-message">
+
+      {{ successMessage() }}
+
+    </section>
+
+  }
+
+
+  @if (errorMessage()) {
+
+    <section class="error-message">
+
+      <strong>
+        No fue posible completar la operación
+      </strong>
+
+      <p>
+        {{ errorMessage() }}
+      </p>
+
+    </section>
+
+  }
+
+
+  <section class="create-card">
+
+    <div class="section-heading">
+
+      <h2>
+        Nueva prestación
+      </h2>
+
+      <p>
+        Registra una nueva prestación
+        veterinaria en VetCare.
+      </p>
+
+    </div>
+
+
+    <form
+      [formGroup]="createForm"
+      (ngSubmit)="createService()">
+
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label for="name">
+            Nombre
+          </label>
+
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Ej: Consulta general">
+
+          @if (createFieldInvalid('name')) {
+
+            <small class="field-error">
+              El nombre es obligatorio.
+            </small>
+
+          }
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label for="price">
+            Precio
+          </label>
+
+          <input
+            id="price"
+            type="number"
+            formControlName="price"
+            min="0"
+            step="1">
+
+          @if (createFieldInvalid('price')) {
+
+            <small class="field-error">
+              El precio no puede ser negativo.
+            </small>
+
+          }
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label for="availableSlots">
+            Cupos disponibles
+          </label>
+
+          <input
+            id="availableSlots"
+            type="number"
+            formControlName="availableSlots"
+            min="0"
+            step="1">
+
+          @if (createFieldInvalid('availableSlots')) {
+
+            <small class="field-error">
+              Los cupos no pueden ser negativos.
+            </small>
+
+          }
+
+        </div>
+
+
+        <div class="form-action">
+
+          <button
+            type="submit"
+            class="primary-button"
+            [disabled]="creating()">
+
+            @if (creating()) {
+
+              Creando...
+
+            } @else {
+
+              Crear prestación
+
+            }
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </section>
+
+
+  <section class="services-section">
+
+    <div class="section-heading">
+
+      <h2>
+        Prestaciones registradas
+      </h2>
+
+      <p>
+        Modifica el precio y los cupos
+        de las prestaciones existentes.
+      </p>
+
+    </div>
+
+
+    @if (loading()) {
+
+      <div class="state-card">
+
+        Cargando catálogo...
+
+      </div>
+
+    } @else if (services().length === 0) {
+
+      <div class="state-card">
+
+        No existen prestaciones registradas.
+
+      </div>
+
+    } @else {
+
+      <div class="services-table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                ID
+              </th>
+
+              <th>
+                Prestación
+              </th>
+
+              <th>
+                Precio
+              </th>
+
+              <th>
+                Cupos
+              </th>
+
+              <th>
+                Acción
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              service of services();
+              track service.id
+            ) {
+
+              <tr>
+
+                <td>
+                  #{{ service.id }}
+                </td>
+
+                <td>
+                  <strong>
+                    {{ service.name }}
+                  </strong>
+                </td>
+
+                <td>
+                  {{ formatPrice(service.price) }}
+                </td>
+
+                <td>
+                  {{ service.availableSlots }}
+                </td>
+
+                <td>
+
+                  <button
+                    type="button"
+                    class="edit-button"
+                    (click)="selectService(service)">
+
+                    Editar
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </section>
+
+
+  @if (selectedService(); as service) {
+
+    <section class="edit-card">
+
+      <div class="section-heading">
+
+        <p class="eyebrow">
+          Editando
+        </p>
+
+        <h2>
+          {{ service.name }}
+        </h2>
+
+        <p>
+          Modifica el precio y los cupos disponibles.
+        </p>
+
+      </div>
+
+
+      <form
+        [formGroup]="editForm"
+        (ngSubmit)="updateService()">
+
+        <div class="edit-grid">
+
+
+          <div class="form-field">
+
+            <label for="editPrice">
+              Precio
+            </label>
+
+            <input
+              id="editPrice"
+              type="number"
+              formControlName="price"
+              min="0"
+              step="1">
+
+            @if (editFieldInvalid('price')) {
+
+              <small class="field-error">
+                El precio no puede ser negativo.
+              </small>
+
+            }
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="editSlots">
+              Cupos disponibles
+            </label>
+
+            <input
+              id="editSlots"
+              type="number"
+              formControlName="availableSlots"
+              min="0"
+              step="1">
+
+            @if (
+              editFieldInvalid(
+                'availableSlots'
+              )
+            ) {
+
+              <small class="field-error">
+                Los cupos no pueden ser negativos.
+              </small>
+
+            }
+
+          </div>
+
+        </div>
+
+
+        <div class="edit-actions">
+
+          <button
+            type="button"
+            class="secondary-button"
+            [disabled]="updating()"
+            (click)="cancelEdit()">
+
+            Cancelar
+
+          </button>
+
+          <button
+            type="submit"
+            class="primary-button"
+            [disabled]="updating()">
+
+            @if (updating()) {
+
+              Guardando...
+
+            } @else {
+
+              Guardar cambios
+
+            }
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+  }
 
 </section>

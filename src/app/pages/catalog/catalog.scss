@@ -1,0 +1,225 @@
+.catalog-page {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+
+/* HEADER */
+
+.page-header {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: flex-start;
+
+  gap: 24px;
+
+  margin-bottom: 28px;
+}
+
+.page-header h1 {
+  margin: 4px 0 8px;
+  font-size: 30px;
+}
+
+.page-header p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  color: #2563eb !important;
+}
+
+.refresh-button,
+.retry-button {
+  min-height: 42px;
+
+  padding: 10px 16px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  color: #374151;
+
+  background: #ffffff;
+}
+
+.refresh-button:hover:not(:disabled),
+.retry-button:hover {
+  background: #f3f4f6;
+}
+
+.refresh-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+
+/* GRID */
+
+.catalog-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px;
+}
+
+
+/* SERVICIO */
+
+.service-card {
+  padding: 22px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 14px
+    rgba(0, 0, 0, 0.04);
+}
+
+.service-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+}
+
+.service-id {
+  font-size: 12px;
+  font-weight: 700;
+
+  color: #6b7280;
+}
+
+.service-card h2 {
+  margin:
+    14px 0
+    22px;
+
+  font-size: 21px;
+
+  color: #111827;
+}
+
+.service-info {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+.service-info div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+
+  padding: 14px;
+
+  border-radius: 10px;
+
+  background: #f9fafb;
+}
+
+.service-info span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.service-info strong {
+  font-size: 16px;
+  color: #111827;
+}
+
+
+/* DISPONIBILIDAD */
+
+.availability {
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.available {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.unavailable {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+
+/* ESTADOS */
+
+.state-card {
+  padding: 48px 28px;
+
+  text-align: center;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+
+  background: #ffffff;
+}
+
+.state-card h2 {
+  margin-top: 0;
+}
+
+.state-card p {
+  color: #6b7280;
+}
+
+.error-state {
+  border-color: #fecaca;
+  background: #fffafa;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 750px) {
+
+  .catalog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header {
+    flex-direction: column;
+  }
+
+  .refresh-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 450px) {
+
+  .service-info {
+    grid-template-columns: 1fr;
+  }
+}

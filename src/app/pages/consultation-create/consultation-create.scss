@@ -1,0 +1,353 @@
+.create-page {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 28px;
+}
+
+.page-header h1 {
+  margin: 4px 0 8px;
+  font-size: 30px;
+}
+
+.page-header p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #2563eb !important;
+}
+
+
+/* FORMULARIO */
+
+.consultation-form {
+  overflow: hidden;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 16px
+    rgba(0, 0, 0, 0.04);
+}
+
+.form-section {
+  padding: 28px;
+}
+
+.form-section h2 {
+  margin: 0 0 6px;
+}
+
+.form-section > p {
+  margin: 0 0 26px;
+  color: #6b7280;
+}
+
+.form-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 22px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-field label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #374151;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 11px 12px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+
+  font: inherit;
+  color: #111827;
+
+  background: #ffffff;
+}
+
+.form-field textarea {
+  resize: vertical;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: 2px solid #bfdbfe;
+  border-color: #2563eb;
+}
+
+.field-error {
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+
+/* CATÁLOGO */
+
+.catalog-state {
+  padding: 11px 12px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+
+  color: #6b7280;
+
+  background: #f9fafb;
+}
+
+.catalog-error {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 10px 12px;
+
+  border: 1px solid #fecaca;
+  border-radius: 9px;
+
+  color: #991b1b;
+
+  background: #fef2f2;
+}
+
+.retry-button {
+  padding: 4px 6px;
+
+  border: 0;
+
+  font: inherit;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  color: #b91c1c;
+
+  background: transparent;
+}
+
+.retry-button:hover {
+  text-decoration: underline;
+}
+
+
+/* BOTONES */
+
+.form-actions {
+  display: flex;
+
+  justify-content: flex-end;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 20px 28px;
+
+  border-top: 1px solid #e5e7eb;
+
+  background: #f9fafb;
+}
+
+.primary-button,
+.cancel-button {
+  padding: 11px 18px;
+
+  border-radius: 9px;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.primary-button {
+  border: 1px solid #2563eb;
+
+  cursor: pointer;
+
+  color: #ffffff;
+
+  background: #2563eb;
+}
+
+.primary-button:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.primary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.cancel-button {
+  text-decoration: none;
+
+  border: 1px solid #d1d5db;
+
+  color: #374151;
+
+  background: #ffffff;
+}
+
+.cancel-button:hover {
+  background: #f3f4f6;
+}
+
+
+/* MENSAJE DE ÉXITO */
+
+.success-card {
+  margin-bottom: 22px;
+
+  padding: 22px;
+
+  border: 1px solid #a7f3d0;
+  border-radius: 14px;
+
+  background: #ecfdf5;
+}
+
+.success-card h2 {
+  margin-top: 0;
+  color: #047857;
+}
+
+.success-card p {
+  color: #065f46;
+}
+
+.success-details {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin: 20px 0;
+}
+
+.success-details div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+
+  padding: 14px;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+}
+
+.success-details span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.success-details strong {
+  color: #111827;
+}
+
+.secondary-link {
+  display: inline-block;
+
+  text-decoration: none;
+
+  font-weight: 700;
+
+  color: #047857;
+}
+
+.secondary-link:hover {
+  text-decoration: underline;
+}
+
+
+/* MENSAJE DE ERROR */
+
+.error-card {
+  margin-bottom: 22px;
+
+  padding: 22px;
+
+  border: 1px solid #fecaca;
+  border-radius: 14px;
+
+  background: #fef2f2;
+}
+
+.error-card strong {
+  color: #b91c1c;
+}
+
+.error-card p {
+  margin-bottom: 0;
+  color: #7f1d1d;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  .success-details {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .primary-button,
+  .cancel-button {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .catalog-error {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,349 @@
+.admin-catalog-page {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+
+/* HEADER */
+
+.page-header {
+  margin-bottom: 28px;
+}
+
+.page-header h1 {
+  margin: 4px 0 8px;
+  font-size: 30px;
+}
+
+.page-header p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  color: #2563eb !important;
+}
+
+
+/* SECCIONES */
+
+.create-card,
+.services-section,
+.edit-card {
+  margin-bottom: 24px;
+
+  padding: 24px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 14px
+    rgba(0, 0, 0, 0.04);
+}
+
+.section-heading {
+  margin-bottom: 22px;
+}
+
+.section-heading h2 {
+  margin: 0 0 6px;
+}
+
+.section-heading p {
+  margin: 0;
+  color: #6b7280;
+}
+
+
+/* FORMULARIOS */
+
+.form-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(220px, 2fr)
+    minmax(150px, 1fr)
+    minmax(150px, 1fr)
+    auto;
+
+  gap: 16px;
+
+  align-items: end;
+}
+
+.edit-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.form-field label {
+  font-size: 13px;
+  font-weight: 700;
+
+  color: #374151;
+}
+
+.form-field input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 10px 12px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+
+  font: inherit;
+
+  background: #ffffff;
+}
+
+.form-field input:focus {
+  outline: 2px solid #bfdbfe;
+  border-color: #2563eb;
+}
+
+.field-error {
+  font-size: 12px;
+
+  color: #b91c1c;
+}
+
+.form-action {
+  display: flex;
+}
+
+
+/* BOTONES */
+
+.primary-button,
+.secondary-button,
+.edit-button {
+  min-height: 42px;
+
+  padding: 10px 15px;
+
+  border-radius: 9px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.primary-button {
+  border: 1px solid #2563eb;
+
+  color: #ffffff;
+
+  background: #2563eb;
+}
+
+.primary-button:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
+}
+
+.secondary-button {
+  border: 1px solid #d1d5db;
+
+  color: #374151;
+
+  background: #ffffff;
+}
+
+.secondary-button:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.edit-button {
+  min-height: auto;
+
+  padding: 7px 11px;
+
+  border: 1px solid #bfdbfe;
+
+  color: #1d4ed8;
+
+  background: #eff6ff;
+}
+
+.edit-button:hover {
+  background: #dbeafe;
+}
+
+
+/* TABLA */
+
+.services-table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 14px 16px;
+
+  text-align: left;
+
+  border-bottom: 1px solid #f3f4f6;
+}
+
+th {
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  color: #6b7280;
+
+  background: #f9fafb;
+}
+
+td {
+  font-size: 14px;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+
+/* EDICIÓN */
+
+.edit-card {
+  border-color: #bfdbfe;
+
+  background: #f8fbff;
+}
+
+.edit-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 22px;
+}
+
+
+/* MENSAJES */
+
+.success-message,
+.error-message {
+  margin-bottom: 20px;
+
+  padding: 16px 18px;
+
+  border-radius: 12px;
+}
+
+.success-message {
+  border: 1px solid #a7f3d0;
+
+  color: #065f46;
+
+  background: #ecfdf5;
+}
+
+.error-message {
+  border: 1px solid #fecaca;
+
+  background: #fef2f2;
+}
+
+.error-message strong {
+  color: #b91c1c;
+}
+
+.error-message p {
+  margin:
+    5px 0
+    0;
+
+  color: #7f1d1d;
+}
+
+.state-card {
+  padding: 32px;
+
+  text-align: center;
+
+  color: #6b7280;
+
+  border-radius: 10px;
+
+  background: #f9fafb;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+  .form-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .form-action {
+    grid-column:
+      1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .form-grid,
+  .edit-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .form-action {
+    grid-column:
+      auto;
+  }
+
+  .primary-button {
+    width: 100%;
+  }
+
+  .edit-actions {
+    flex-direction: column;
+  }
+
+  .secondary-button,
+  .edit-actions .primary-button {
+    width: 100%;
+  }
+}

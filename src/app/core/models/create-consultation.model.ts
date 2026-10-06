@@ -25,5 +25,7 @@ export interface CreateConsultationResponse {
 
   requestedAt: string;
 
+  observations: string | null;
+
   status: ConsultationStatus;
 }
