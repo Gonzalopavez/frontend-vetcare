@@ -3,7 +3,8 @@ import {
 } from '@angular/core';
 
 import {
-  HttpClient
+  HttpClient,
+  HttpParams
 } from '@angular/common/http';
 
 import {
@@ -15,65 +16,90 @@ import {
 } from '../config/api.config';
 
 import {
-  CatalogService
-} from '../models/catalog-service.model';
+  Consultation
+} from '../models/consultation.model';
 
+import {
+  ConsultationFilter
+} from '../models/consultation-filter.model';
 
-export interface CreateCatalogServiceRequest {
-  name: string;
-  price: number;
-  availableSlots: number;
-}
+import {
+  CreateConsultationRequest,
+  CreateConsultationResponse
+} from '../models/create-consultation.model';
 
-
-export interface UpdateCatalogServiceRequest {
-  price: number;
-  availableSlots: number;
-}
-
+import {
+  UpdateConsultationStatusRequest
+} from '../models/update-consultation-status.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CatalogApiService {
+export class ConsultationsApiService {
 
   private readonly baseUrl =
-    `${apiConfig.bffBaseUrl}/api/catalog/services`;
-
+    `${apiConfig.bffBaseUrl}/api/consultations`;
 
   constructor(
     private readonly http: HttpClient
   ) {}
 
+  /**
+   * Lista las consultas. Los filtros son opcionales:
+   * status, from y to solo se envían si tienen valor.
+   */
+  getConsultations(
+    filter: ConsultationFilter = {}
+  ): Observable<Consultation[]> {
 
-  getServices():
-    Observable<CatalogService[]> {
+    let params = new HttpParams();
 
-    return this.http.get<CatalogService[]>(
-      this.baseUrl
+    if (filter.status) {
+      params = params.set('status', filter.status);
+    }
+
+    if (filter.from) {
+      params = params.set('from', filter.from);
+    }
+
+    if (filter.to) {
+      params = params.set('to', filter.to);
+    }
+
+    return this.http.get<Consultation[]>(
+      this.baseUrl,
+      { params }
     );
   }
 
+  getConsultationById(
+    id: number
+  ): Observable<Consultation> {
 
-  createService(
-    request: CreateCatalogServiceRequest
-  ): Observable<CatalogService> {
+    return this.http.get<Consultation>(
+      `${this.baseUrl}/${id}`
+    );
+  }
 
-    return this.http.post<CatalogService>(
+  createConsultation(
+    request: CreateConsultationRequest
+  ): Observable<CreateConsultationResponse> {
+
+    return this.http.post<CreateConsultationResponse>(
       this.baseUrl,
       request
     );
   }
 
-
-  updateService(
+  updateStatus(
     id: number,
-    request: UpdateCatalogServiceRequest
-  ): Observable<CatalogService> {
+    request: UpdateConsultationStatusRequest
+  ): Observable<Consultation> {
 
-    return this.http.put<CatalogService>(
-      `${this.baseUrl}/${id}`,
+    return this.http.put<Consultation>(
+      `${this.baseUrl}/${id}/status`,
       request
     );
   }
+
 }

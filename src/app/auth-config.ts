@@ -11,9 +11,14 @@ import {
   MsalInterceptorConfiguration
 } from '@azure/msal-angular';
 
+import {
+  apiConfig
+} from './core/config/api.config';
 
+/**
+ * Scopes de la API VetCare registrados en Microsoft Entra ID.
+ */
 export const vetCareApiScopes = {
-
   consultasLeer:
     'api://75dfa48a-173a-4c90-8413-e6ac41efbc58/Consultas.Leer',
 
@@ -27,11 +32,18 @@ export const vetCareApiScopes = {
     'api://75dfa48a-173a-4c90-8413-e6ac41efbc58/Catalogo.Escribir'
 };
 
+/**
+ * Origen actual de la aplicación:
+ * - http://localhost:4200 en desarrollo
+ * - https://<tu-app>.amplifyapp.com en AWS Amplify
+ *
+ * Cada origen (con "/" final) debe estar registrado en Entra ID,
+ * en la plataforma "Aplicación de página única (SPA)".
+ */
+const appOrigin = `${window.location.origin}/`;
 
 export const msalConfig: Configuration = {
-
   auth: {
-
     clientId:
       '76587cb6-60bd-4fd9-afa5-1727ffb6b570',
 
@@ -39,19 +51,17 @@ export const msalConfig: Configuration = {
       'https://login.microsoftonline.com/b5cc8e1d-1dbb-4b10-bbf5-da56c099e228',
 
     redirectUri:
-      'http://localhost:4200/',
+      appOrigin,
 
     postLogoutRedirectUri:
-      'http://localhost:4200/'
+      appOrigin
   },
 
   cache: {
-
     cacheLocation:
       BrowserCacheLocation.SessionStorage
   }
 };
-
 
 export function MSALInstanceFactory():
   IPublicClientApplication {
@@ -61,31 +71,28 @@ export function MSALInstanceFactory():
   );
 }
 
-
 export function MSALGuardConfigFactory():
   MsalGuardConfiguration {
 
   return {
-
     interactionType:
       InteractionType.Redirect
   };
 }
 
-
 export function MSALInterceptorConfigFactory():
   MsalInterceptorConfiguration {
+
+  const baseUrl = apiConfig.bffBaseUrl;
 
   const protectedResourceMap =
     new Map<string, Array<string>>();
 
-
-  /*
+  /**
    * Perfil del usuario autenticado.
    */
   protectedResourceMap.set(
-    'http://localhost:8084/api/security/me',
-
+    `${baseUrl}/api/security/me`,
     [
       vetCareApiScopes.consultasLeer,
       vetCareApiScopes.consultasEscribir,
@@ -94,8 +101,7 @@ export function MSALInterceptorConfigFactory():
     ]
   );
 
-
-  /*
+  /**
    * API de consultas.
    *
    * La misma ruta puede recibir GET, POST y PUT,
@@ -103,8 +109,7 @@ export function MSALInterceptorConfigFactory():
    * lectura y escritura.
    */
   protectedResourceMap.set(
-    'http://localhost:8084/api/consultations',
-
+    `${baseUrl}/api/consultations`,
     [
       vetCareApiScopes.consultasLeer,
       vetCareApiScopes.consultasEscribir
@@ -112,21 +117,18 @@ export function MSALInterceptorConfigFactory():
   );
 
   protectedResourceMap.set(
-    'http://localhost:8084/api/consultations/*',
-
+    `${baseUrl}/api/consultations/*`,
     [
       vetCareApiScopes.consultasLeer,
       vetCareApiScopes.consultasEscribir
     ]
   );
 
-
-  /*
+  /**
    * API de catálogo.
    */
   protectedResourceMap.set(
-    'http://localhost:8084/api/catalog/services',
-
+    `${baseUrl}/api/catalog/services`,
     [
       vetCareApiScopes.catalogoLeer,
       vetCareApiScopes.catalogoEscribir
@@ -134,17 +136,14 @@ export function MSALInterceptorConfigFactory():
   );
 
   protectedResourceMap.set(
-    'http://localhost:8084/api/catalog/services/*',
-
+    `${baseUrl}/api/catalog/services/*`,
     [
       vetCareApiScopes.catalogoLeer,
       vetCareApiScopes.catalogoEscribir
     ]
   );
 
-
   return {
-
     interactionType:
       InteractionType.Redirect,
 

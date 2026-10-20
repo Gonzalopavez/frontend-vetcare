@@ -16,6 +16,10 @@ import {
 } from 'rxjs';
 
 import {
+  apiConfig
+} from '../config/api.config';
+
+import {
   CurrentUser,
   VetCareRole
 } from '../models/current-user.model';
@@ -69,8 +73,13 @@ export class AuthStateService {
         : null;
     });
 
+  /**
+   * Endpoint del perfil autenticado.
+   * Usa la misma URL base que el resto de la API
+   * (BFF local o API Gateway en AWS).
+   */
   private readonly securityEndpoint =
-    'http://localhost:8084/api/security/me';
+    `${apiConfig.bffBaseUrl}/api/security/me`;
 
   constructor(
     private readonly http: HttpClient
@@ -80,7 +89,6 @@ export class AuthStateService {
     Observable<CurrentUser> {
 
     this.loadingSignal.set(true);
-
     this.errorSignal.set(null);
 
     return this.http
@@ -96,11 +104,6 @@ export class AuthStateService {
           );
 
           this.loadingSignal.set(false);
-
-          console.log(
-            'Usuario VetCare cargado:',
-            user
-          );
         }),
 
         catchError((error) => {
@@ -143,9 +146,8 @@ export class AuthStateService {
   clearUser(): void {
 
     this.currentUserSignal.set(null);
-
     this.loadingSignal.set(false);
-
     this.errorSignal.set(null);
   }
+
 }
