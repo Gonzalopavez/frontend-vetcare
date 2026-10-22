@@ -1,12 +1,208 @@
-<section>
+<section class="audit-page">
 
-  <h1>
-    Auditoría
-  </h1>
+  <header class="page-header">
 
-  <p>
-    El módulo completo de auditoría está contemplado
-    para una etapa posterior del proyecto VetCare.
-  </p>
+    <div>
+
+      <p class="eyebrow">
+        Trazabilidad del sistema
+      </p>
+
+      <h1>
+        Auditoría
+      </h1>
+
+      <p>
+        Consulta los eventos generados por los
+        microservicios de VetCare y registrados
+        mediante RabbitMQ.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="refresh-button"
+      [disabled]="loading()"
+      (click)="loadEvents()">
+
+      @if (loading()) {
+
+        Actualizando...
+
+      } @else {
+
+        Actualizar
+
+      }
+
+    </button>
+
+  </header>
+
+
+  @if (errorMessage()) {
+
+    <section class="error-message">
+
+      <div>
+
+        <strong>
+          No fue posible cargar la auditoría
+        </strong>
+
+        <p>
+          {{ errorMessage() }}
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="loadEvents()">
+
+        Reintentar
+
+      </button>
+
+    </section>
+
+  }
+
+
+  @if (loading()) {
+
+    <section class="state-card">
+
+      <p>
+        Cargando eventos de auditoría...
+      </p>
+
+    </section>
+
+  } @else if (
+    !errorMessage() &&
+    events().length === 0
+  ) {
+
+    <section class="state-card">
+
+      <h2>
+        No hay eventos registrados
+      </h2>
+
+      <p>
+        Cuando Catalog o Consultations generen
+        eventos mediante RabbitMQ, aparecerán aquí.
+      </p>
+
+    </section>
+
+  } @else if (!errorMessage()) {
+
+    <section class="audit-summary">
+
+      <div>
+
+        <span>
+          Eventos registrados
+        </span>
+
+        <strong>
+          {{ events().length }}
+        </strong>
+
+      </div>
+
+    </section>
+
+
+    <section class="events-list">
+
+      @for (
+        event of events();
+        track event.id
+      ) {
+
+        <article class="event-card">
+
+          <header class="event-header">
+
+            <div>
+
+              <span class="event-id">
+                Evento #{{ event.id }}
+              </span>
+
+              <h2>
+                {{ formatEventType(event) }}
+              </h2>
+
+            </div>
+
+
+            <span class="routing-key">
+
+              {{ getRoutingKey(event) }}
+
+            </span>
+
+          </header>
+
+
+          <div class="event-information">
+
+            <div>
+
+              <span class="label">
+                Fecha de recepción
+              </span>
+
+              <strong>
+                {{
+                  formatDateTime(
+                    getReceivedAt(event)
+                  )
+                }}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span class="label">
+                Routing key
+              </span>
+
+              <strong>
+                {{ getRoutingKey(event) }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <div class="payload-section">
+
+            <span class="label">
+              Información del evento
+            </span>
+
+            <pre>{{ formatPayload(event.payload) }}</pre>
+
+          </div>
+
+        </article>
+
+      }
+
+    </section>
+
+  }
 
 </section>

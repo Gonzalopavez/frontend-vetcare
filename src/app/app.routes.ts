@@ -39,16 +39,20 @@ import {
 } from './pages/forbidden/forbidden';
 
 import {
-  Protected
-} from './pages/protected/protected';
-
-import {
   roleGuard
 } from './core/auth/role.guard';
 
 
 export const routes: Routes = [
 
+  /*
+   * ==============================
+   * INICIO
+   * ==============================
+   *
+   * Cualquier usuario autenticado
+   * puede entrar al dashboard.
+   */
   {
     path: 'dashboard',
 
@@ -60,6 +64,17 @@ export const routes: Routes = [
   },
 
 
+  /*
+   * ==============================
+   * CREAR CONSULTA
+   * ==============================
+   *
+   * Operador:
+   * puede crear consultas.
+   *
+   * Cliente:
+   * puede crear sus propias consultas.
+   */
   {
     path: 'consultations/new',
 
@@ -76,6 +91,14 @@ export const routes: Routes = [
   },
 
 
+  /*
+   * ==============================
+   * GESTIÓN DE ESTADOS
+   * ==============================
+   *
+   * Admin y Operador pueden avanzar
+   * el estado de una consulta.
+   */
   {
     path: 'consultations/status',
 
@@ -92,6 +115,22 @@ export const routes: Routes = [
   },
 
 
+  /*
+   * ==============================
+   * LISTADO DE CONSULTAS
+   * ==============================
+   *
+   * Admin:
+   * ve las consultas.
+   *
+   * Operador:
+   * ve las consultas.
+   *
+   * Cliente:
+   * ve solamente las consultas que
+   * el backend le permite ver según
+   * su ownerOid.
+   */
   {
     path: 'consultations',
 
@@ -109,6 +148,19 @@ export const routes: Routes = [
   },
 
 
+  /*
+   * ==============================
+   * CATÁLOGO
+   * ==============================
+   *
+   * Admin y Operador pueden navegar
+   * por la vista general del catálogo.
+   *
+   * Cliente no necesita esta pantalla.
+   * Solo necesita GET catálogo desde
+   * Nueva consulta para seleccionar
+   * una prestación.
+   */
   {
     path: 'catalog',
 
@@ -125,6 +177,13 @@ export const routes: Routes = [
   },
 
 
+  /*
+   * ==============================
+   * ADMINISTRAR CATÁLOGO
+   * ==============================
+   *
+   * Exclusivo para Admin.
+   */
   {
     path: 'admin/catalog',
 
@@ -140,6 +199,13 @@ export const routes: Routes = [
   },
 
 
+  /*
+   * ==============================
+   * AUDITORÍA
+   * ==============================
+   *
+   * Exclusivo para Auditor.
+   */
   {
     path: 'audit',
 
@@ -155,17 +221,11 @@ export const routes: Routes = [
   },
 
 
-  {
-    path: 'protected',
-
-    component: Protected,
-
-    canActivate: [
-      MsalGuard
-    ]
-  },
-
-
+  /*
+   * ==============================
+   * ACCESO DENEGADO
+   * ==============================
+   */
   {
     path: 'forbidden',
 
@@ -173,6 +233,9 @@ export const routes: Routes = [
   },
 
 
+  /*
+   * Ruta inicial.
+   */
   {
     path: '',
 
@@ -182,6 +245,10 @@ export const routes: Routes = [
   },
 
 
+  /*
+   * Cualquier URL inexistente vuelve
+   * al dashboard.
+   */
   {
     path: '**',
 

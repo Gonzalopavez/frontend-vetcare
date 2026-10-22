@@ -67,12 +67,14 @@ export class Consultations implements OnInit {
   protected readonly errorMessage =
     signal<string | null>(null);
 
+
   protected filterStatus:
     ConsultationStatus | '' = '';
 
   protected filterFrom = '';
 
   protected filterTo = '';
+
 
   protected readonly availableStatuses:
     ConsultationStatus[] = [
@@ -103,11 +105,22 @@ export class Consultations implements OnInit {
   }
 
 
-  private loadInitialData(): void {
+  /**
+   * Carga:
+   *
+   * - consultas
+   * - prestaciones del catálogo
+   *
+   * El catálogo se utiliza para mostrar
+   * el nombre de la prestación en vez
+   * de solamente su ID.
+   */
+  protected loadInitialData(): void {
 
     this.loading.set(true);
 
     this.errorMessage.set(null);
+
 
     forkJoin({
 
@@ -127,7 +140,9 @@ export class Consultations implements OnInit {
       }) => {
 
         this.consultations.set(
-          consultations
+          this.sortConsultations(
+            consultations
+          )
         );
 
         this.catalogServices.set(
@@ -136,6 +151,7 @@ export class Consultations implements OnInit {
 
         this.loading.set(false);
       },
+
 
       error: (
         error: HttpErrorResponse
@@ -147,16 +163,23 @@ export class Consultations implements OnInit {
 
         this.loading.set(false);
 
-        this.handleError(error);
+        this.handleError(
+          error
+        );
       }
     });
   }
 
 
+  /**
+   * Carga las consultas aplicando
+   * los filtros seleccionados.
+   */
   protected loadConsultations(): void {
 
     const filter:
       ConsultationFilter = {};
+
 
     if (this.filterStatus) {
 
@@ -164,11 +187,13 @@ export class Consultations implements OnInit {
         this.filterStatus;
     }
 
+
     if (this.filterFrom) {
 
       filter.from =
         this.filterFrom;
     }
+
 
     if (this.filterTo) {
 
@@ -176,22 +201,29 @@ export class Consultations implements OnInit {
         this.filterTo;
     }
 
+
     this.loading.set(true);
 
     this.errorMessage.set(null);
 
+
     this.consultationsApi
-      .getConsultations(filter)
+      .getConsultations(
+        filter
+      )
       .subscribe({
 
         next: (consultations) => {
 
           this.consultations.set(
-            consultations
+            this.sortConsultations(
+              consultations
+            )
           );
 
           this.loading.set(false);
         },
+
 
         error: (
           error: HttpErrorResponse
@@ -201,12 +233,17 @@ export class Consultations implements OnInit {
 
           this.loading.set(false);
 
-          this.handleError(error);
+          this.handleError(
+            error
+          );
         }
       });
   }
 
 
+  /**
+   * Limpia todos los filtros.
+   */
   protected clearFilters(): void {
 
     this.filterStatus = '';
@@ -219,6 +256,10 @@ export class Consultations implements OnInit {
   }
 
 
+  /**
+   * Busca el nombre de una prestación
+   * utilizando su ID.
+   */
   protected getServiceName(
     serviceId: number
   ): string {
@@ -230,11 +271,18 @@ export class Consultations implements OnInit {
             item.id === serviceId
         );
 
-    return service?.name
-      ?? `Prestación #${serviceId}`;
+
+    return (
+      service?.name
+      ?? `Prestación #${serviceId}`
+    );
   }
 
 
+  /**
+   * Traduce el estado técnico a un
+   * texto más amigable.
+   */
   protected formatStatus(
     status: ConsultationStatus
   ): string {
@@ -261,7 +309,83 @@ export class Consultations implements OnInit {
           'Cancelada'
       };
 
+
     return labels[status];
+  }
+
+
+  /**
+   * Formatea fecha y hora para Chile.
+   */
+  protected formatDateTime(
+    value: string
+  ): string {
+
+    const date =
+      new Date(value);
+
+
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
+
+      return value;
+    }
+
+
+    return new Intl.DateTimeFormat(
+      'es-CL',
+      {
+        dateStyle:
+          'medium',
+
+        timeStyle:
+          'short'
+      }
+    ).format(date);
+  }
+
+
+  /**
+   * Ordena primero las consultas
+   * más recientes.
+   */
+  private sortConsultations(
+    consultations: Consultation[]
+  ): Consultation[] {
+
+    return [...consultations]
+      .sort(
+        (a, b) => {
+
+          const firstDate =
+            new Date(
+              a.requestedAt
+            ).getTime();
+
+          const secondDate =
+            new Date(
+              b.requestedAt
+            ).getTime();
+
+
+          if (
+            Number.isNaN(firstDate) ||
+            Number.isNaN(secondDate)
+          ) {
+
+            return b.id - a.id;
+          }
+
+
+          return (
+            secondDate -
+            firstDate
+          );
+        }
+      );
   }
 
 
@@ -269,7 +393,9 @@ export class Consultations implements OnInit {
     error: HttpErrorResponse
   ): void {
 
-    if (error.status === 401) {
+    if (
+      error.status === 401
+    ) {
 
       this.errorMessage.set(
         'Tu sesión no posee una credencial válida. Inicia sesión nuevamente.'
@@ -278,7 +404,10 @@ export class Consultations implements OnInit {
       return;
     }
 
-    if (error.status === 403) {
+
+    if (
+      error.status === 403
+    ) {
 
       this.errorMessage.set(
         'No tienes autorización para consultar esta información.'
@@ -287,7 +416,10 @@ export class Consultations implements OnInit {
       return;
     }
 
-    if (error.status === 503) {
+
+    if (
+      error.status === 503
+    ) {
 
       this.errorMessage.set(
         'Uno de los servicios de VetCare no se encuentra disponible en este momento.'
@@ -296,7 +428,10 @@ export class Consultations implements OnInit {
       return;
     }
 
-    if (error.status === 0) {
+
+    if (
+      error.status === 0
+    ) {
 
       this.errorMessage.set(
         'No fue posible establecer conexión con VetCare.'
@@ -304,6 +439,7 @@ export class Consultations implements OnInit {
 
       return;
     }
+
 
     this.errorMessage.set(
       'Ocurrió un error al cargar la información de las consultas.'

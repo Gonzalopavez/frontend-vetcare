@@ -257,6 +257,23 @@ export class AdminCatalog implements OnInit {
       availableSlots:
         service.availableSlots
     });
+
+
+    setTimeout(() => {
+
+      document
+        .getElementById(
+          'edit-service'
+        )
+        ?.scrollIntoView({
+          behavior:
+            'smooth',
+
+          block:
+            'start'
+        });
+
+    }, 0);
   }
 
 
@@ -319,8 +336,11 @@ export class AdminCatalog implements OnInit {
             current =>
               current.map(
                 item =>
-                  item.id === updatedService.id
+                  item.id ===
+                  updatedService.id
+
                     ? updatedService
+
                     : item
               )
           );
@@ -356,9 +376,14 @@ export class AdminCatalog implements OnInit {
     return new Intl.NumberFormat(
       'es-CL',
       {
-        style: 'currency',
-        currency: 'CLP',
-        maximumFractionDigits: 0
+        style:
+          'currency',
+
+        currency:
+          'CLP',
+
+        maximumFractionDigits:
+          0
       }
     ).format(price);
   }
@@ -366,13 +391,15 @@ export class AdminCatalog implements OnInit {
 
   protected createFieldInvalid(
     field:
-      'name' |
-      'price' |
-      'availableSlots'
+      'name'
+      | 'price'
+      | 'availableSlots'
   ): boolean {
 
     const control =
-      this.createForm.controls[field];
+      this.createForm.controls[
+        field
+      ];
 
     return (
       control.invalid &&
@@ -386,12 +413,14 @@ export class AdminCatalog implements OnInit {
 
   protected editFieldInvalid(
     field:
-      'price' |
-      'availableSlots'
+      'price'
+      | 'availableSlots'
   ): boolean {
 
     const control =
-      this.editForm.controls[field];
+      this.editForm.controls[
+        field
+      ];
 
     return (
       control.invalid &&

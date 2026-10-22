@@ -123,11 +123,16 @@ export class ConsultationCreate implements OnInit {
   }
 
 
+  /**
+   * Obtiene las prestaciones disponibles
+   * desde Catalog a través del BFF.
+   */
   protected loadCatalog(): void {
 
     this.loadingCatalog.set(true);
 
     this.catalogError.set(null);
+
 
     this.catalogApi
       .getServices()
@@ -139,8 +144,11 @@ export class ConsultationCreate implements OnInit {
             services
           );
 
-          this.loadingCatalog.set(false);
+          this.loadingCatalog.set(
+            false
+          );
         },
+
 
         error: (
           error: HttpErrorResponse
@@ -148,7 +156,9 @@ export class ConsultationCreate implements OnInit {
 
           this.catalogServices.set([]);
 
-          this.loadingCatalog.set(false);
+          this.loadingCatalog.set(
+            false
+          );
 
           this.handleCatalogError(
             error
@@ -158,21 +168,29 @@ export class ConsultationCreate implements OnInit {
   }
 
 
+  /**
+   * Envía una nueva consulta al BFF.
+   */
   protected submit(): void {
 
     this.errorMessage.set(null);
 
     this.createdConsultation.set(null);
 
-    if (this.form.invalid) {
+
+    if (
+      this.form.invalid
+    ) {
 
       this.form.markAllAsTouched();
 
       return;
     }
 
+
     const rawValue =
       this.form.getRawValue();
+
 
     const request:
       CreateConsultationRequest = {
@@ -194,20 +212,31 @@ export class ConsultationCreate implements OnInit {
           rawValue.observations.trim()
       };
 
+
     this.submitting.set(true);
 
+
     this.consultationsApi
-      .createConsultation(request)
+      .createConsultation(
+        request
+      )
       .subscribe({
 
         next: (response) => {
 
-          this.submitting.set(false);
+          this.submitting.set(
+            false
+          );
 
           this.createdConsultation.set(
             response
           );
 
+
+          /*
+           * Limpia el formulario después
+           * de crear la consulta.
+           */
           this.form.reset({
 
             petName: '',
@@ -220,11 +249,14 @@ export class ConsultationCreate implements OnInit {
           });
         },
 
+
         error: (
           error: HttpErrorResponse
         ) => {
 
-          this.submitting.set(false);
+          this.submitting.set(
+            false
+          );
 
           this.handleCreateError(
             error
@@ -234,11 +266,15 @@ export class ConsultationCreate implements OnInit {
   }
 
 
+  /**
+   * Permite mostrar errores solo cuando
+   * el usuario ya interactuó con el campo.
+   */
   protected hasError(
     controlName:
-      'petName' |
-      'serviceId' |
-      'requestedAt'
+      'petName'
+      | 'serviceId'
+      | 'requestedAt'
   ): boolean {
 
     const control =
@@ -246,16 +282,23 @@ export class ConsultationCreate implements OnInit {
         controlName
       ];
 
+
     return (
-      control.invalid &&
+      control.invalid
+      &&
       (
-        control.touched ||
+        control.touched
+        ||
         control.dirty
       )
     );
   }
 
 
+  /**
+   * Busca el nombre de una prestación
+   * usando su ID.
+   */
   protected getServiceName(
     serviceId: number
   ): string {
@@ -267,11 +310,17 @@ export class ConsultationCreate implements OnInit {
             item.id === serviceId
         );
 
-    return service?.name
-      ?? `Prestación #${serviceId}`;
+
+    return (
+      service?.name
+      ?? `Prestación #${serviceId}`
+    );
   }
 
 
+  /**
+   * Formatea precios para Chile.
+   */
   protected formatPrice(
     price: number
   ): string {
@@ -279,14 +328,28 @@ export class ConsultationCreate implements OnInit {
     return new Intl.NumberFormat(
       'es-CL',
       {
-        style: 'currency',
-        currency: 'CLP',
-        maximumFractionDigits: 0
+        style:
+          'currency',
+
+        currency:
+          'CLP',
+
+        maximumFractionDigits:
+          0
       }
     ).format(price);
   }
 
 
+  /**
+   * datetime-local entrega:
+   *
+   * 2026-10-22T14:30
+   *
+   * El backend recibe:
+   *
+   * 2026-10-22T14:30:00
+   */
   private normalizeDateTime(
     value: string
   ): string {
@@ -298,6 +361,7 @@ export class ConsultationCreate implements OnInit {
       return `${value}:00`;
     }
 
+
     return value;
   }
 
@@ -306,7 +370,9 @@ export class ConsultationCreate implements OnInit {
     error: HttpErrorResponse
   ): void {
 
-    if (error.status === 401) {
+    if (
+      error.status === 401
+    ) {
 
       this.catalogError.set(
         'Tu sesión no posee una credencial válida.'
@@ -315,7 +381,10 @@ export class ConsultationCreate implements OnInit {
       return;
     }
 
-    if (error.status === 403) {
+
+    if (
+      error.status === 403
+    ) {
 
       this.catalogError.set(
         'No tienes autorización para consultar las prestaciones veterinarias.'
@@ -324,7 +393,10 @@ export class ConsultationCreate implements OnInit {
       return;
     }
 
-    if (error.status === 503) {
+
+    if (
+      error.status === 503
+    ) {
 
       this.catalogError.set(
         'El servicio de catálogo no se encuentra disponible en este momento.'
@@ -333,7 +405,10 @@ export class ConsultationCreate implements OnInit {
       return;
     }
 
-    if (error.status === 0) {
+
+    if (
+      error.status === 0
+    ) {
 
       this.catalogError.set(
         'No fue posible establecer conexión con VetCare.'
@@ -341,6 +416,7 @@ export class ConsultationCreate implements OnInit {
 
       return;
     }
+
 
     this.catalogError.set(
       'No fue posible cargar las prestaciones veterinarias.'
@@ -352,7 +428,9 @@ export class ConsultationCreate implements OnInit {
     error: HttpErrorResponse
   ): void {
 
-    if (error.status === 400) {
+    if (
+      error.status === 400
+    ) {
 
       this.errorMessage.set(
         'Los datos ingresados no son válidos. Revisa el formulario.'
@@ -361,7 +439,10 @@ export class ConsultationCreate implements OnInit {
       return;
     }
 
-    if (error.status === 401) {
+
+    if (
+      error.status === 401
+    ) {
 
       this.errorMessage.set(
         'Tu sesión no posee una credencial válida. Inicia sesión nuevamente.'
@@ -370,7 +451,10 @@ export class ConsultationCreate implements OnInit {
       return;
     }
 
-    if (error.status === 403) {
+
+    if (
+      error.status === 403
+    ) {
 
       this.errorMessage.set(
         'No tienes autorización para crear consultas veterinarias.'
@@ -379,7 +463,34 @@ export class ConsultationCreate implements OnInit {
       return;
     }
 
-    if (error.status === 503) {
+
+    if (
+      error.status === 404
+    ) {
+
+      this.errorMessage.set(
+        'La prestación seleccionada no existe.'
+      );
+
+      return;
+    }
+
+
+    if (
+      error.status === 409
+    ) {
+
+      this.errorMessage.set(
+        'No fue posible crear la consulta con la prestación seleccionada.'
+      );
+
+      return;
+    }
+
+
+    if (
+      error.status === 503
+    ) {
 
       this.errorMessage.set(
         'El servicio de consultas veterinarias no se encuentra disponible en este momento.'
@@ -388,7 +499,10 @@ export class ConsultationCreate implements OnInit {
       return;
     }
 
-    if (error.status === 0) {
+
+    if (
+      error.status === 0
+    ) {
 
       this.errorMessage.set(
         'No fue posible establecer conexión con VetCare.'
@@ -396,6 +510,7 @@ export class ConsultationCreate implements OnInit {
 
       return;
     }
+
 
     this.errorMessage.set(
       'Ocurrió un error al crear la consulta veterinaria.'

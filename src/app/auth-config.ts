@@ -16,11 +16,12 @@ import {
 } from './core/config/api.config';
 
 /**
- * Scopes de la API VetCare registrados en Microsoft Entra ID.
+ * Scopes reales de VetCare registrados en Microsoft Entra ID.
  */
 export const vetCareApiScopes = {
+
   consultasLeer:
-    'api://75dfa48a-173a-4c90-8413-e6ac41efbc58/Consultas.Leer',
+    'api://75dfa48a-173a-4c90-8413-e6ac41efbc58/Consultas.leer',
 
   consultasEscribir:
     'api://75dfa48a-173a-4c90-8413-e6ac41efbc58/Consultas.Escribir',
@@ -33,17 +34,20 @@ export const vetCareApiScopes = {
 };
 
 /**
- * Origen actual de la aplicación:
- * - http://localhost:4200 en desarrollo
- * - https://<tu-app>.amplifyapp.com en AWS Amplify
+ * Usa automáticamente el origen actual.
  *
- * Cada origen (con "/" final) debe estar registrado en Entra ID,
- * en la plataforma "Aplicación de página única (SPA)".
+ * Local:
+ * http://localhost:4200/
+ *
+ * AWS Amplify:
+ * https://production.d3ry6yi9x6895b.amplifyapp.com/
  */
 const appOrigin = `${window.location.origin}/`;
 
 export const msalConfig: Configuration = {
+
   auth: {
+
     clientId:
       '76587cb6-60bd-4fd9-afa5-1727ffb6b570',
 
@@ -58,11 +62,15 @@ export const msalConfig: Configuration = {
   },
 
   cache: {
+
     cacheLocation:
       BrowserCacheLocation.SessionStorage
   }
 };
 
+/**
+ * Instancia principal de Microsoft MSAL.
+ */
 export function MSALInstanceFactory():
   IPublicClientApplication {
 
@@ -71,25 +79,43 @@ export function MSALInstanceFactory():
   );
 }
 
+/**
+ * Configuración utilizada por MsalGuard.
+ */
 export function MSALGuardConfigFactory():
   MsalGuardConfiguration {
 
   return {
+
     interactionType:
       InteractionType.Redirect
   };
 }
 
+/**
+ * Configuración del interceptor.
+ *
+ * Agrega automáticamente:
+ *
+ * Authorization: Bearer <token>
+ *
+ * a las llamadas hacia el BFF/API Gateway.
+ */
 export function MSALInterceptorConfigFactory():
   MsalInterceptorConfiguration {
 
-  const baseUrl = apiConfig.bffBaseUrl;
+  const baseUrl =
+    apiConfig.bffBaseUrl;
 
   const protectedResourceMap =
     new Map<string, Array<string>>();
 
   /**
-   * Perfil del usuario autenticado.
+   * Perfil VetCare.
+   *
+   * Se solicitan todos los scopes que utiliza actualmente
+   * la aplicación para que Angular pueda conocer
+   * correctamente roles y authorities del usuario.
    */
   protectedResourceMap.set(
     `${baseUrl}/api/security/me`,
@@ -102,11 +128,13 @@ export function MSALInterceptorConfigFactory():
   );
 
   /**
-   * API de consultas.
+   * CONSULTATIONS
    *
-   * La misma ruta puede recibir GET, POST y PUT,
-   * por lo que solicitamos los permisos de
-   * lectura y escritura.
+   * GET:
+   * Consultas.leer
+   *
+   * POST / PUT:
+   * Consultas.Escribir
    */
   protectedResourceMap.set(
     `${baseUrl}/api/consultations`,
@@ -125,7 +153,13 @@ export function MSALInterceptorConfigFactory():
   );
 
   /**
-   * API de catálogo.
+   * CATALOG
+   *
+   * GET:
+   * Catalogo.Leer
+   *
+   * POST / PUT:
+   * Catalogo.Escribir
    */
   protectedResourceMap.set(
     `${baseUrl}/api/catalog/services`,
@@ -143,7 +177,32 @@ export function MSALInterceptorConfigFactory():
     ]
   );
 
+  /**
+   * AUDIT
+   *
+   * Actualmente Entra no tiene un scope
+   * Auditoria.Leer independiente.
+   *
+   * Audit valida principalmente el ROLE_Auditor.
+   * Se utiliza Consultas.leer para obtener un
+   * Access Token válido destinado a VetCare-API.
+   */
+  protectedResourceMap.set(
+    `${baseUrl}/api/audit/events`,
+    [
+      vetCareApiScopes.consultasLeer
+    ]
+  );
+
+  protectedResourceMap.set(
+    `${baseUrl}/api/audit/events/*`,
+    [
+      vetCareApiScopes.consultasLeer
+    ]
+  );
+
   return {
+
     interactionType:
       InteractionType.Redirect,
 

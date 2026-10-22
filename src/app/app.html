@@ -21,7 +21,9 @@
         type="button"
         class="primary-button"
         (click)="login()">
+
         Iniciar sesión con Microsoft Entra
+
       </button>
 
     </section>
@@ -37,8 +39,11 @@
       <a
         class="brand-link"
         routerLink="/dashboard">
+
         VetCare
+
       </a>
+
 
       @if (authState.currentUser(); as user) {
 
@@ -47,20 +52,30 @@
           <div class="user-text">
 
             <strong>
-              {{ user.name ?? user.preferred_username }}
+              {{
+                user.name
+                ?? user.preferred_username
+                ?? 'Usuario VetCare'
+              }}
             </strong>
 
             <span>
-              {{ authState.primaryRole() ?? 'Sin rol' }}
+              {{
+                authState.primaryRole()
+                ?? 'Sin rol asignado'
+              }}
             </span>
 
           </div>
+
 
           <button
             type="button"
             class="logout-button"
             (click)="logout()">
+
             Cerrar sesión
+
           </button>
 
         </div>
@@ -69,19 +84,45 @@
 
     </header>
 
+
     <div class="application-body">
 
       <aside class="sidebar">
 
         <nav class="navigation">
 
+          <!--
+            ==============================
+            INICIO
+            ==============================
+
+            Visible para cualquier usuario
+            autenticado.
+          -->
           <a
             routerLink="/dashboard"
             routerLinkActive="active">
+
             Inicio
+
           </a>
 
 
+          <!--
+            ==============================
+            CONSULTAS
+            ==============================
+
+            Admin:
+            ve todas las consultas.
+
+            Operador:
+            ve las consultas.
+
+            Cliente:
+            ve solamente sus consultas
+            según ownerOid en backend.
+          -->
           @if (
             authState.hasAnyRole(
               'Admin',
@@ -94,10 +135,18 @@
               routerLink="/consultations"
               routerLinkActive="active">
 
-              @if (authState.hasRole('Cliente')) {
+              @if (
+                authState.hasRole(
+                  'Cliente'
+                )
+              ) {
+
                 Mis consultas
+
               } @else {
+
                 Consultas
+
               }
 
             </a>
@@ -105,6 +154,15 @@
           }
 
 
+          <!--
+            ==============================
+            NUEVA CONSULTA
+            ==============================
+
+            Disponible para:
+            Operador
+            Cliente
+          -->
           @if (
             authState.hasAnyRole(
               'Operador',
@@ -115,12 +173,23 @@
             <a
               routerLink="/consultations/new"
               routerLinkActive="active">
+
               Nueva consulta
+
             </a>
 
           }
 
 
+          <!--
+            ==============================
+            GESTIÓN DE ESTADOS
+            ==============================
+
+            Disponible para:
+            Admin
+            Operador
+          -->
           @if (
             authState.hasAnyRole(
               'Admin',
@@ -131,12 +200,27 @@
             <a
               routerLink="/consultations/status"
               routerLinkActive="active">
+
               Gestionar estados
+
             </a>
 
           }
 
 
+          <!--
+            ==============================
+            CATÁLOGO
+            ==============================
+
+            Vista general disponible para:
+            Admin
+            Operador
+
+            Cliente puede leer las prestaciones
+            desde Nueva consulta, pero no necesita
+            esta vista en el menú.
+          -->
           @if (
             authState.hasAnyRole(
               'Admin',
@@ -147,33 +231,57 @@
             <a
               routerLink="/catalog"
               routerLinkActive="active">
+
               Catálogo
+
             </a>
 
           }
 
 
+          <!--
+            ==============================
+            ADMINISTRAR CATÁLOGO
+            ==============================
+
+            Solo Admin.
+          -->
           @if (
-            authState.hasRole('Admin')
+            authState.hasRole(
+              'Admin'
+            )
           ) {
 
             <a
               routerLink="/admin/catalog"
               routerLinkActive="active">
+
               Administrar catálogo
+
             </a>
 
           }
 
 
+          <!--
+            ==============================
+            AUDITORÍA
+            ==============================
+
+            Solo Auditor.
+          -->
           @if (
-            authState.hasRole('Auditor')
+            authState.hasRole(
+              'Auditor'
+            )
           ) {
 
             <a
               routerLink="/audit"
               routerLinkActive="active">
+
               Auditoría
+
             </a>
 
           }
@@ -182,9 +290,12 @@
 
       </aside>
 
+
       <main class="content">
 
-        @if (authState.loading()) {
+        @if (
+          authState.loading()
+        ) {
 
           <section class="loading-state">
 

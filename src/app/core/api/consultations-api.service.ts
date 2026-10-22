@@ -32,46 +32,84 @@ import {
   UpdateConsultationStatusRequest
 } from '../models/update-consultation-status.model';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class ConsultationsApiService {
 
+  /**
+   * Todas las llamadas pasan por el BFF.
+   *
+   * Local:
+   * http://localhost:8084/api/consultations
+   *
+   * AWS:
+   * API Gateway -> BFF -> Consultations
+   */
   private readonly baseUrl =
     `${apiConfig.bffBaseUrl}/api/consultations`;
+
 
   constructor(
     private readonly http: HttpClient
   ) {}
 
+
   /**
-   * Lista las consultas. Los filtros son opcionales:
-   * status, from y to solo se envían si tienen valor.
+   * Lista las consultas.
+   *
+   * Los filtros son opcionales:
+   * - status
+   * - from
+   * - to
    */
   getConsultations(
     filter: ConsultationFilter = {}
   ): Observable<Consultation[]> {
 
-    let params = new HttpParams();
+    let params =
+      new HttpParams();
 
     if (filter.status) {
-      params = params.set('status', filter.status);
+
+      params =
+        params.set(
+          'status',
+          filter.status
+        );
     }
 
     if (filter.from) {
-      params = params.set('from', filter.from);
+
+      params =
+        params.set(
+          'from',
+          filter.from
+        );
     }
 
     if (filter.to) {
-      params = params.set('to', filter.to);
+
+      params =
+        params.set(
+          'to',
+          filter.to
+        );
     }
 
     return this.http.get<Consultation[]>(
       this.baseUrl,
-      { params }
+      {
+        params
+      }
     );
   }
 
+
+  /**
+   * Obtiene una consulta específica.
+   */
   getConsultationById(
     id: number
   ): Observable<Consultation> {
@@ -81,6 +119,10 @@ export class ConsultationsApiService {
     );
   }
 
+
+  /**
+   * Crea una nueva consulta.
+   */
   createConsultation(
     request: CreateConsultationRequest
   ): Observable<CreateConsultationResponse> {
@@ -91,6 +133,19 @@ export class ConsultationsApiService {
     );
   }
 
+
+  /**
+   * Cambia el estado de una consulta.
+   *
+   * Ejemplo:
+   *
+   * PUT /api/consultations/2/status
+   *
+   * Body:
+   * {
+   *   "status": "CONFIRMADA"
+   * }
+   */
   updateStatus(
     id: number,
     request: UpdateConsultationStatusRequest

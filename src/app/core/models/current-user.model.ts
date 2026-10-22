@@ -4,6 +4,7 @@ export type VetCareRole =
   | 'Cliente'
   | 'Auditor';
 
+
 export interface CurrentUser {
 
   authenticated: boolean;

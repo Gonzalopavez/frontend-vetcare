@@ -9,15 +9,27 @@
       </p>
 
       <h1>
-        @if (authState.hasRole('Cliente')) {
+        @if (
+          authState.hasRole(
+            'Cliente'
+          )
+        ) {
+
           Mis consultas
+
         } @else {
+
           Consultas veterinarias
+
         }
       </h1>
 
       <p>
-        @if (authState.hasRole('Cliente')) {
+        @if (
+          authState.hasRole(
+            'Cliente'
+          )
+        ) {
 
           Revisa tus solicitudes de atención
           veterinaria y su estado actual.
@@ -57,7 +69,9 @@
         ) {
 
           <option [value]="status">
+
             {{ formatStatus(status) }}
+
           </option>
 
         }
@@ -100,15 +114,18 @@
       <button
         type="button"
         class="primary-button"
+        [disabled]="loading()"
         (click)="loadConsultations()">
 
         Aplicar filtros
 
       </button>
 
+
       <button
         type="button"
         class="secondary-button"
+        [disabled]="loading()"
         (click)="clearFilters()">
 
         Limpiar
@@ -145,7 +162,7 @@
       <button
         type="button"
         class="secondary-button"
-        (click)="loadConsultations()">
+        (click)="loadInitialData()">
 
         Reintentar
 
@@ -153,7 +170,9 @@
 
     </section>
 
-  } @else if (consultations().length === 0) {
+  } @else if (
+    consultations().length === 0
+  ) {
 
     <section class="state-card">
 
@@ -162,8 +181,21 @@
       </h2>
 
       <p>
-        No se encontraron consultas que coincidan
-        con los criterios seleccionados.
+        @if (
+          authState.hasRole(
+            'Cliente'
+          )
+        ) {
+
+          Todavía no tienes consultas que coincidan
+          con los criterios seleccionados.
+
+        } @else {
+
+          No se encontraron consultas que coincidan
+          con los criterios seleccionados.
+
+        }
       </p>
 
     </section>
@@ -178,13 +210,20 @@
           {{ consultations().length }}
         </strong>
 
-        @if (consultations().length === 1) {
+        @if (
+          consultations().length === 1
+        ) {
+
           consulta encontrada
+
         } @else {
+
           consultas encontradas
+
         }
 
       </div>
+
 
       <div class="table-wrapper">
 
@@ -214,9 +253,14 @@
                 Estado
               </th>
 
+              <th>
+                Observaciones
+              </th>
+
             </tr>
 
           </thead>
+
 
           <tbody>
 
@@ -231,19 +275,37 @@
                   #{{ consultation.id }}
                 </td>
 
+
                 <td>
+
                   <strong>
                     {{ consultation.petName }}
                   </strong>
+
                 </td>
 
-                <td>
-  {{ getServiceName(consultation.serviceId) }}
-</td>
 
                 <td>
-                  {{ consultation.requestedAt }}
+
+                  {{
+                    getServiceName(
+                      consultation.serviceId
+                    )
+                  }}
+
                 </td>
+
+
+                <td>
+
+                  {{
+                    formatDateTime(
+                      consultation.requestedAt
+                    )
+                  }}
+
+                </td>
+
 
                 <td>
 
@@ -251,9 +313,23 @@
                     class="status-badge"
                     [attr.data-status]="consultation.status">
 
-                    {{ formatStatus(consultation.status) }}
+                    {{
+                      formatStatus(
+                        consultation.status
+                      )
+                    }}
 
                   </span>
+
+                </td>
+
+
+                <td>
+
+                  {{
+                    consultation.observations
+                    || 'Sin observaciones'
+                  }}
 
                 </td>
 

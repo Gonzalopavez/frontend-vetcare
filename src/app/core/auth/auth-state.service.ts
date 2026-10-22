@@ -24,6 +24,7 @@ import {
   VetCareRole
 } from '../models/current-user.model';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -38,6 +39,7 @@ export class AuthStateService {
   private readonly errorSignal =
     signal<string | null>(null);
 
+
   readonly currentUser =
     this.currentUserSignal.asReadonly();
 
@@ -47,6 +49,11 @@ export class AuthStateService {
   readonly error =
     this.errorSignal.asReadonly();
 
+
+  /**
+   * Indica si el perfil cargado desde el BFF
+   * corresponde a un usuario autenticado.
+   */
   readonly isAuthenticated =
     computed(
       () =>
@@ -54,42 +61,89 @@ export class AuthStateService {
           ?.authenticated === true
     );
 
+
+  /**
+   * Roles VetCare recibidos desde:
+   *
+   * GET /api/security/me
+   */
   readonly roles =
-    computed(
+    computed<VetCareRole[]>(
       () =>
         this.currentUserSignal()
           ?.roles ?? []
     );
 
+
+  /**
+   * Rol principal mostrado en la interfaz.
+   *
+   * La autorización real NO depende de este valor.
+   * Para permisos se utilizan hasRole() y
+   * hasAnyRole().
+   */
   readonly primaryRole =
     computed<VetCareRole | null>(() => {
 
       const roles =
-        this.currentUserSignal()
-          ?.roles ?? [];
+        this.roles();
 
-      return roles.length > 0
-        ? roles[0]
-        : null;
+      const rolePriority:
+        VetCareRole[] = [
+          'Admin',
+          'Operador',
+          'Cliente',
+          'Auditor'
+        ];
+
+      for (
+        const role of rolePriority
+      ) {
+
+        if (
+          roles.includes(role)
+        ) {
+
+          return role;
+        }
+      }
+
+      return null;
     });
 
+
   /**
-   * Endpoint del perfil autenticado.
-   * Usa la misma URL base que el resto de la API
-   * (BFF local o API Gateway en AWS).
+   * Perfil autenticado.
+   *
+   * LOCAL:
+   * http://localhost:8084/api/security/me
+   *
+   * AWS:
+   * API Gateway -> BFF -> /api/security/me
    */
   private readonly securityEndpoint =
     `${apiConfig.bffBaseUrl}/api/security/me`;
+
 
   constructor(
     private readonly http: HttpClient
   ) {}
 
+
+  /**
+   * Carga desde el BFF:
+   *
+   * - datos del usuario
+   * - roles
+   * - authorities
+   */
   loadCurrentUser():
     Observable<CurrentUser> {
 
     this.loadingSignal.set(true);
+
     this.errorSignal.set(null);
+
 
     return this.http
       .get<CurrentUser>(
@@ -103,8 +157,11 @@ export class AuthStateService {
             user
           );
 
-          this.loadingSignal.set(false);
+          this.loadingSignal.set(
+            false
+          );
         }),
+
 
         catchError((error) => {
 
@@ -112,11 +169,14 @@ export class AuthStateService {
             null
           );
 
-          this.loadingSignal.set(false);
+          this.loadingSignal.set(
+            false
+          );
 
           this.errorSignal.set(
             'No fue posible cargar la información del usuario.'
           );
+
 
           return throwError(
             () => error
@@ -125,6 +185,14 @@ export class AuthStateService {
       );
   }
 
+
+  /**
+   * Comprueba un rol específico.
+   *
+   * Ejemplo:
+   *
+   * hasRole('Admin')
+   */
   hasRole(
     role: VetCareRole
   ): boolean {
@@ -133,6 +201,18 @@ export class AuthStateService {
       .includes(role);
   }
 
+
+  /**
+   * Comprueba si el usuario posee
+   * al menos uno de los roles.
+   *
+   * Ejemplo:
+   *
+   * hasAnyRole(
+   *   'Admin',
+   *   'Operador'
+   * )
+   */
   hasAnyRole(
     ...roles: VetCareRole[]
   ): boolean {
@@ -143,11 +223,22 @@ export class AuthStateService {
     );
   }
 
+
+  /**
+   * Limpia el estado al cerrar sesión.
+   */
   clearUser(): void {
 
-    this.currentUserSignal.set(null);
-    this.loadingSignal.set(false);
-    this.errorSignal.set(null);
-  }
+    this.currentUserSignal.set(
+      null
+    );
 
+    this.loadingSignal.set(
+      false
+    );
+
+    this.errorSignal.set(
+      null
+    );
+  }
 }

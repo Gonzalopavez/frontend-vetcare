@@ -48,6 +48,7 @@
 
         </div>
 
+
         <div>
 
           <span>
@@ -60,6 +61,7 @@
 
         </div>
 
+
         <div>
 
           <span>
@@ -67,10 +69,15 @@
           </span>
 
           <strong>
-            {{ getServiceName(consultation.serviceId) }}
+            {{
+              getServiceName(
+                consultation.serviceId
+              )
+            }}
           </strong>
 
         </div>
+
 
         <div>
 
@@ -85,6 +92,7 @@
         </div>
 
       </div>
+
 
       <a
         routerLink="/consultations"
@@ -137,6 +145,10 @@
       <div class="form-grid">
 
 
+        <!-- ========================= -->
+        <!-- MASCOTA -->
+        <!-- ========================= -->
+
         <div class="form-field">
 
           <label for="petName">
@@ -150,7 +162,11 @@
             placeholder="Ej: Luna"
             maxlength="100">
 
-          @if (hasError('petName')) {
+          @if (
+            hasError(
+              'petName'
+            )
+          ) {
 
             <small class="field-error">
               Ingresa un nombre válido para la mascota.
@@ -161,16 +177,23 @@
         </div>
 
 
+        <!-- ========================= -->
+        <!-- PRESTACIÓN -->
+        <!-- ========================= -->
+
         <div class="form-field">
 
           <label for="serviceId">
             Prestación veterinaria
           </label>
 
+
           @if (loadingCatalog()) {
 
             <div class="catalog-state">
+
               Cargando prestaciones...
+
             </div>
 
           } @else if (catalogError()) {
@@ -192,6 +215,16 @@
 
             </div>
 
+          } @else if (
+            catalogServices().length === 0
+          ) {
+
+            <div class="catalog-state">
+
+              No existen prestaciones disponibles.
+
+            </div>
+
           } @else {
 
             <select
@@ -202,19 +235,33 @@
                 Selecciona una prestación
               </option>
 
+
               @for (
                 service of catalogServices();
                 track service.id
               ) {
 
                 <option
-                  [ngValue]="service.id">
+                  [ngValue]="service.id"
+                  [disabled]="
+                    service.availableSlots <= 0
+                  ">
 
                   {{ service.name }}
                   —
                   {{ formatPrice(service.price) }}
                   —
-                  {{ service.availableSlots }} cupos
+                  @if (
+                    service.availableSlots > 0
+                  ) {
+
+                    {{ service.availableSlots }} cupos
+
+                  } @else {
+
+                    Sin cupos
+
+                  }
 
                 </option>
 
@@ -224,7 +271,12 @@
 
           }
 
-          @if (hasError('serviceId')) {
+
+          @if (
+            hasError(
+              'serviceId'
+            )
+          ) {
 
             <small class="field-error">
               Selecciona una prestación veterinaria.
@@ -234,6 +286,10 @@
 
         </div>
 
+
+        <!-- ========================= -->
+        <!-- FECHA Y HORA -->
+        <!-- ========================= -->
 
         <div class="form-field full-width">
 
@@ -246,7 +302,11 @@
             type="datetime-local"
             formControlName="requestedAt">
 
-          @if (hasError('requestedAt')) {
+          @if (
+            hasError(
+              'requestedAt'
+            )
+          ) {
 
             <small class="field-error">
               Selecciona una fecha y hora.
@@ -256,6 +316,10 @@
 
         </div>
 
+
+        <!-- ========================= -->
+        <!-- OBSERVACIONES -->
+        <!-- ========================= -->
 
         <div class="form-field full-width">
 
@@ -277,6 +341,10 @@
     </div>
 
 
+    <!-- ========================= -->
+    <!-- ACCIONES -->
+    <!-- ========================= -->
+
     <div class="form-actions">
 
       <a
@@ -286,6 +354,7 @@
         Cancelar
 
       </a>
+
 
       <button
         type="submit"

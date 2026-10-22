@@ -3,13 +3,20 @@ import {
 } from '@angular/core';
 
 import {
+  RouterLink
+} from '@angular/router';
+
+import {
   AuthStateService
 } from '../../core/auth/auth-state.service';
+
 
 @Component({
   selector: 'app-dashboard',
 
-  imports: [],
+  imports: [
+    RouterLink
+  ],
 
   templateUrl: './dashboard.html',
 
@@ -18,6 +25,8 @@ import {
 export class Dashboard {
 
   constructor(
-    protected readonly authState: AuthStateService
+    protected readonly authState:
+      AuthStateService
   ) {}
+
 }

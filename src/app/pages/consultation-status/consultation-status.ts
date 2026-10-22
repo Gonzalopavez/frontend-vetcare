@@ -59,6 +59,18 @@ export class ConsultationStatusPage implements OnInit {
   protected readonly updatingId =
     signal<number | null>(null);
 
+  /**
+   * Guarda el estado seleccionado para cada consulta.
+   *
+   * Ejemplo:
+   * {
+   *   1: 'CONFIRMADA',
+   *   2: 'CANCELADA'
+   * }
+   */
+  protected readonly selectedStatuses =
+    signal<Record<number, ConsultationStatus | ''>>({});
+
 
   constructor(
     private readonly consultationsApi:
@@ -75,6 +87,9 @@ export class ConsultationStatusPage implements OnInit {
   }
 
 
+  /**
+   * Carga las consultas y las prestaciones.
+   */
   protected loadData(): void {
 
     this.loading.set(true);
@@ -108,6 +123,8 @@ export class ConsultationStatusPage implements OnInit {
           services
         );
 
+        this.selectedStatuses.set({});
+
         this.loading.set(false);
       },
 
@@ -119,6 +136,8 @@ export class ConsultationStatusPage implements OnInit {
 
         this.catalogServices.set([]);
 
+        this.selectedStatuses.set({});
+
         this.loading.set(false);
 
         this.handleLoadError(error);
@@ -127,6 +146,10 @@ export class ConsultationStatusPage implements OnInit {
   }
 
 
+  /**
+   * Devuelve los estados permitidos según
+   * el estado actual de la consulta.
+   */
   protected getValidNextStatuses(
     currentStatus: ConsultationStatus
   ): ConsultationStatus[] {
@@ -172,18 +195,116 @@ export class ConsultationStatusPage implements OnInit {
   }
 
 
-  protected updateStatus(
-    consultation: Consultation,
-    newStatusValue: string
+  /**
+   * Guarda el estado que el usuario seleccionó
+   * en una consulta determinada.
+   */
+  protected selectStatus(
+    consultationId: number,
+    value: string
   ): void {
 
-    if (!newStatusValue) {
+    const status =
+      value as ConsultationStatus | '';
+
+    this.selectedStatuses.update(
+      current => ({
+        ...current,
+        [consultationId]: status
+      })
+    );
+
+    this.errorMessage.set(null);
+
+    this.successMessage.set(null);
+  }
+
+
+  /**
+   * Obtiene el estado seleccionado actualmente.
+   */
+  protected getSelectedStatus(
+    consultationId: number
+  ): ConsultationStatus | '' {
+
+    return (
+      this.selectedStatuses()[consultationId]
+      ?? ''
+    );
+  }
+
+
+  /**
+   * Indica si el botón puede utilizarse.
+   */
+  protected canUpdateStatus(
+    consultation: Consultation
+  ): boolean {
+
+    const selectedStatus =
+      this.getSelectedStatus(
+        consultation.id
+      );
+
+    if (!selectedStatus) {
+
+      return false;
+    }
+
+    if (
+      this.updatingId() ===
+      consultation.id
+    ) {
+
+      return false;
+    }
+
+    return this
+      .getValidNextStatuses(
+        consultation.status
+      )
+      .includes(selectedStatus);
+  }
+
+
+  /**
+   * Envía el cambio de estado al BFF.
+   */
+  protected updateStatus(
+    consultation: Consultation
+  ): void {
+
+    const newStatus =
+      this.getSelectedStatus(
+        consultation.id
+      );
+
+    if (!newStatus) {
+
+      this.errorMessage.set(
+        'Debes seleccionar un nuevo estado.'
+      );
 
       return;
     }
 
-    const newStatus =
-      newStatusValue as ConsultationStatus;
+    const validStatuses =
+      this.getValidNextStatuses(
+        consultation.status
+      );
+
+    if (
+      !validStatuses.includes(
+        newStatus
+      )
+    ) {
+
+      this.errorMessage.set(
+        'La transición de estado seleccionada no está permitida.'
+      );
+
+      return;
+    }
 
     this.errorMessage.set(null);
 
@@ -202,16 +323,33 @@ export class ConsultationStatusPage implements OnInit {
       )
       .subscribe({
 
-        next: (updatedConsultation) => {
+        next: (
+          updatedConsultation
+        ) => {
 
           this.consultations.update(
             currentConsultations =>
               currentConsultations.map(
                 item =>
-                  item.id === updatedConsultation.id
+                  item.id ===
+                  updatedConsultation.id
+
                     ? updatedConsultation
+
                     : item
               )
+          );
+
+          /**
+           * Limpia el select después
+           * de una actualización correcta.
+           */
+          this.selectedStatuses.update(
+            current => ({
+              ...current,
+              [updatedConsultation.id]:
+                ''
+            })
           );
 
           this.updatingId.set(null);
@@ -235,6 +373,9 @@ export class ConsultationStatusPage implements OnInit {
   }
 
 
+  /**
+   * Busca el nombre de la prestación usando su ID.
+   */
   protected getServiceName(
     serviceId: number
   ): string {
@@ -246,11 +387,17 @@ export class ConsultationStatusPage implements OnInit {
             item.id === serviceId
         );
 
-    return service?.name
-      ?? `Prestación #${serviceId}`;
+    return (
+      service?.name
+      ?? `Prestación #${serviceId}`
+    );
   }
 
 
+  /**
+   * Traduce los estados técnicos a texto
+   * más fácil de mostrar al usuario.
+   */
   protected formatStatus(
     status: ConsultationStatus
   ): string {
@@ -281,6 +428,9 @@ export class ConsultationStatusPage implements OnInit {
   }
 
 
+  /**
+   * Formatea la fecha para Chile.
+   */
   protected formatDateTime(
     value: string
   ): string {
@@ -300,13 +450,19 @@ export class ConsultationStatusPage implements OnInit {
     return new Intl.DateTimeFormat(
       'es-CL',
       {
-        dateStyle: 'medium',
-        timeStyle: 'short'
+        dateStyle:
+          'medium',
+
+        timeStyle:
+          'short'
       }
     ).format(date);
   }
 
 
+  /**
+   * Estados que ya no pueden avanzar.
+   */
   protected isFinalStatus(
     status: ConsultationStatus
   ): boolean {
@@ -331,6 +487,7 @@ export class ConsultationStatusPage implements OnInit {
       return;
     }
 
+
     if (error.status === 403) {
 
       this.errorMessage.set(
@@ -339,6 +496,7 @@ export class ConsultationStatusPage implements OnInit {
 
       return;
     }
+
 
     if (error.status === 503) {
 
@@ -349,6 +507,7 @@ export class ConsultationStatusPage implements OnInit {
       return;
     }
 
+
     if (error.status === 0) {
 
       this.errorMessage.set(
@@ -357,6 +516,7 @@ export class ConsultationStatusPage implements OnInit {
 
       return;
     }
+
 
     this.errorMessage.set(
       'Ocurrió un error al cargar las consultas.'
@@ -377,6 +537,7 @@ export class ConsultationStatusPage implements OnInit {
       return;
     }
 
+
     if (error.status === 401) {
 
       this.errorMessage.set(
@@ -385,6 +546,7 @@ export class ConsultationStatusPage implements OnInit {
 
       return;
     }
+
 
     if (error.status === 403) {
 
@@ -395,6 +557,7 @@ export class ConsultationStatusPage implements OnInit {
       return;
     }
 
+
     if (error.status === 404) {
 
       this.errorMessage.set(
@@ -403,6 +566,7 @@ export class ConsultationStatusPage implements OnInit {
 
       return;
     }
+
 
     if (error.status === 409) {
 
@@ -413,6 +577,7 @@ export class ConsultationStatusPage implements OnInit {
       return;
     }
 
+
     if (error.status === 503) {
 
       this.errorMessage.set(
@@ -421,6 +586,17 @@ export class ConsultationStatusPage implements OnInit {
 
       return;
     }
+
+
+    if (error.status === 0) {
+
+      this.errorMessage.set(
+        'No fue posible conectar con el servicio de consultas.'
+      );
+
+      return;
+    }
+
 
     this.errorMessage.set(
       'Ocurrió un error al actualizar el estado de la consulta.'

@@ -21,6 +21,7 @@ import {
   VetCareRole
 } from '../models/current-user.model';
 
+
 export function roleGuard(
   ...allowedRoles: VetCareRole[]
 ): CanActivateFn {
@@ -33,6 +34,11 @@ export function roleGuard(
     const router =
       inject(Router);
 
+
+    /**
+     * Comprueba si el usuario posee
+     * alguno de los roles permitidos.
+     */
     const evaluateAccess = () => {
 
       if (
@@ -44,6 +50,7 @@ export function roleGuard(
         return true;
       }
 
+
       return router.createUrlTree(
         [
           '/forbidden'
@@ -52,9 +59,10 @@ export function roleGuard(
     };
 
 
-    /*
-     * Si el perfil VetCare ya fue cargado,
-     * podemos evaluar inmediatamente.
+    /**
+     * Si el perfil ya está cargado,
+     * no necesitamos volver a consultar
+     * el BFF.
      */
     if (
       authState.currentUser()
@@ -64,12 +72,15 @@ export function roleGuard(
     }
 
 
-    /*
-     * Si el usuario recargó directamente una URL
-     * protegida, Angular puede no tener todavía
-     * el CurrentUser en memoria.
+    /**
+     * Si el usuario recarga directamente
+     * una ruta protegida, el CurrentUser
+     * puede no existir todavía en memoria.
      *
-     * En ese caso consultamos nuevamente al BFF.
+     * En ese caso se obtiene nuevamente
+     * desde:
+     *
+     * GET /api/security/me
      */
     return authState
       .loadCurrentUser()

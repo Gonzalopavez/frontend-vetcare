@@ -172,7 +172,10 @@
                 </span>
 
                 <strong>
-                  {{ consultation.observations || 'Sin observaciones' }}
+                  {{
+                    consultation.observations
+                    || 'Sin observaciones'
+                  }}
                 </strong>
 
               </div>
@@ -185,7 +188,9 @@
           <div class="status-action">
 
             @if (
-              isFinalStatus(consultation.status)
+              isFinalStatus(
+                consultation.status
+              )
             ) {
 
               <div class="final-state">
@@ -205,9 +210,20 @@
 
               <select
                 [id]="'status-' + consultation.id"
-                #statusSelect
+                [value]="
+                  getSelectedStatus(
+                    consultation.id
+                  )
+                "
                 [disabled]="
-                  updatingId() === consultation.id
+                  updatingId() ===
+                  consultation.id
+                "
+                (change)="
+                  selectStatus(
+                    consultation.id,
+                    $any($event.target).value
+                  )
                 ">
 
                 <option value="">
@@ -221,7 +237,8 @@
                   track status
                 ) {
 
-                  <option [value]="status">
+                  <option
+                    [value]="status">
 
                     {{ formatStatus(status) }}
 
@@ -235,18 +252,19 @@
                 type="button"
                 class="update-button"
                 [disabled]="
-                  !statusSelect.value ||
-                  updatingId() === consultation.id
+                  !canUpdateStatus(
+                    consultation
+                  )
                 "
                 (click)="
                   updateStatus(
-                    consultation,
-                    statusSelect.value
+                    consultation
                   )
                 ">
 
                 @if (
-                  updatingId() === consultation.id
+                  updatingId() ===
+                  consultation.id
                 ) {
 
                   Actualizando...

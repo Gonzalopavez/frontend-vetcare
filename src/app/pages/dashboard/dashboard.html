@@ -15,18 +15,26 @@
         </h1>
 
         <p class="welcome">
-          {{ user.name ?? user.preferred_username }}
+          {{
+            user.name
+            ?? user.preferred_username
+            ?? 'Usuario VetCare'
+          }}
         </p>
 
       </div>
 
       <div class="role-badge">
 
-        {{ authState.primaryRole() ?? 'Sin rol' }}
+        {{
+          authState.primaryRole()
+          ?? 'Sin rol'
+        }}
 
       </div>
 
     </header>
+
 
     <section class="profile-summary">
 
@@ -37,10 +45,15 @@
         </span>
 
         <strong>
-          {{ user.preferred_username ?? user.name }}
+          {{
+            user.preferred_username
+            ?? user.name
+            ?? 'Usuario VetCare'
+          }}
         </strong>
 
       </div>
+
 
       <div>
 
@@ -54,6 +67,7 @@
 
       </div>
 
+
       <div>
 
         <span class="label">
@@ -61,12 +75,16 @@
         </span>
 
         <strong>
-          {{ authState.primaryRole() ?? 'Sin rol asignado' }}
+          {{
+            authState.primaryRole()
+            ?? 'Sin rol asignado'
+          }}
         </strong>
 
       </div>
 
     </section>
+
 
     <section class="modules">
 
@@ -77,14 +95,22 @@
         </h2>
 
         <p>
-          Las opciones mostradas dependen de los permisos
-          asignados a tu cuenta.
+          Las opciones disponibles dependen
+          del rol asignado a tu cuenta.
         </p>
 
       </div>
 
 
-      @if (authState.hasRole('Admin')) {
+      <!-- ============================= -->
+      <!-- ADMIN -->
+      <!-- ============================= -->
+
+      @if (
+        authState.hasRole(
+          'Admin'
+        )
+      ) {
 
         <div class="role-section">
 
@@ -94,76 +120,85 @@
 
           <div class="cards">
 
-            <article class="action-card">
+
+            <a
+              class="action-card"
+              routerLink="/consultations">
 
               <h4>
                 Consultas veterinarias
               </h4>
 
               <p>
-                Consultar las atenciones registradas
-                en VetCare.
+                Consulta las atenciones
+                registradas en VetCare.
               </p>
 
               <span>
-                Consultas.Leer
+                Ver consultas
               </span>
 
-            </article>
+            </a>
 
 
-            <article class="action-card">
+            <a
+              class="action-card"
+              routerLink="/consultations/status">
 
               <h4>
                 Gestionar estados
               </h4>
 
               <p>
-                Administrar el avance del flujo
-                de atención de las consultas.
+                Administra el avance del flujo
+                de atención veterinaria.
               </p>
 
               <span>
-                Consultas.Escribir
+                Gestionar estados
               </span>
 
-            </article>
+            </a>
 
 
-            <article class="action-card">
+            <a
+              class="action-card"
+              routerLink="/catalog">
 
               <h4>
                 Catálogo
               </h4>
 
               <p>
-                Consultar prestaciones, precios,
-                boxes y cupos.
+                Consulta las prestaciones
+                disponibles en VetCare.
               </p>
 
               <span>
-                Catalogo.Leer
+                Ver catálogo
               </span>
 
-            </article>
+            </a>
 
 
-            <article class="action-card">
+            <a
+              class="action-card"
+              routerLink="/admin/catalog">
 
               <h4>
                 Administrar catálogo
               </h4>
 
               <p>
-                Crear o modificar prestaciones,
+                Crea o modifica prestaciones,
                 precios y disponibilidad.
               </p>
 
               <span>
-                Catalogo.Escribir
+                Administrar
               </span>
 
-            </article>
+            </a>
 
           </div>
 
@@ -172,7 +207,15 @@
       }
 
 
-      @if (authState.hasRole('Operador')) {
+      <!-- ============================= -->
+      <!-- OPERADOR -->
+      <!-- ============================= -->
+
+      @if (
+        authState.hasRole(
+          'Operador'
+        )
+      ) {
 
         <div class="role-section">
 
@@ -182,76 +225,85 @@
 
           <div class="cards">
 
-            <article class="action-card">
+
+            <a
+              class="action-card"
+              routerLink="/consultations">
 
               <h4>
                 Consultas veterinarias
               </h4>
 
               <p>
-                Revisar las consultas disponibles
+                Revisa las consultas disponibles
                 para la operación.
               </p>
 
               <span>
-                Consultas.Leer
+                Ver consultas
               </span>
 
-            </article>
+            </a>
 
 
-            <article class="action-card">
+            <a
+              class="action-card"
+              routerLink="/consultations/new">
 
               <h4>
                 Nueva consulta
               </h4>
 
               <p>
-                Registrar una nueva solicitud
+                Registra una nueva solicitud
                 de atención veterinaria.
               </p>
 
               <span>
-                Consultas.Escribir
+                Crear consulta
               </span>
 
-            </article>
+            </a>
 
 
-            <article class="action-card">
+            <a
+              class="action-card"
+              routerLink="/consultations/status">
 
               <h4>
                 Gestionar estados
               </h4>
 
               <p>
-                Gestionar el flujo de atención
+                Gestiona el flujo de atención
                 de las consultas.
               </p>
 
               <span>
-                Consultas.Escribir
+                Gestionar estados
               </span>
 
-            </article>
+            </a>
 
 
-            <article class="action-card">
+            <a
+              class="action-card"
+              routerLink="/catalog">
 
               <h4>
                 Catálogo
               </h4>
 
               <p>
-                Consultar las prestaciones
+                Consulta las prestaciones
                 disponibles.
               </p>
 
               <span>
-                Catalogo.Leer
+                Ver catálogo
               </span>
 
-            </article>
+            </a>
 
           </div>
 
@@ -260,7 +312,15 @@
       }
 
 
-      @if (authState.hasRole('Cliente')) {
+      <!-- ============================= -->
+      <!-- CLIENTE -->
+      <!-- ============================= -->
+
+      @if (
+        authState.hasRole(
+          'Cliente'
+        )
+      ) {
 
         <div class="role-section">
 
@@ -270,40 +330,45 @@
 
           <div class="cards">
 
-            <article class="action-card">
+
+            <a
+              class="action-card"
+              routerLink="/consultations">
 
               <h4>
                 Mis consultas
               </h4>
 
               <p>
-                Revisar tus consultas veterinarias
+                Revisa tus consultas veterinarias
                 y su estado actual.
               </p>
 
               <span>
-                Consultas.Leer
+                Ver mis consultas
               </span>
 
-            </article>
+            </a>
 
 
-            <article class="action-card">
+            <a
+              class="action-card"
+              routerLink="/consultations/new">
 
               <h4>
                 Nueva consulta
               </h4>
 
               <p>
-                Solicitar una nueva atención
-                veterinaria.
+                Solicita una nueva atención
+                veterinaria para tu mascota.
               </p>
 
               <span>
-                Consultas.Escribir
+                Crear consulta
               </span>
 
-            </article>
+            </a>
 
           </div>
 
@@ -312,7 +377,15 @@
       }
 
 
-      @if (authState.hasRole('Auditor')) {
+      <!-- ============================= -->
+      <!-- AUDITOR -->
+      <!-- ============================= -->
+
+      @if (
+        authState.hasRole(
+          'Auditor'
+        )
+      ) {
 
         <div class="role-section">
 
@@ -322,22 +395,26 @@
 
           <div class="cards">
 
-            <article class="action-card">
+
+            <a
+              class="action-card"
+              routerLink="/audit">
 
               <h4>
-                Timeline clínico
+                Eventos de auditoría
               </h4>
 
               <p>
-                Funcionalidad contemplada para
-                una etapa posterior del proyecto.
+                Revisa los eventos generados
+                por Catalog y Consultations
+                mediante RabbitMQ.
               </p>
 
               <span>
-                Próximamente
+                Ver auditoría
               </span>
 
-            </article>
+            </a>
 
           </div>
 
@@ -345,6 +422,10 @@
 
       }
 
+
+      <!-- ============================= -->
+      <!-- SIN ROL -->
+      <!-- ============================= -->
 
       @if (
         !authState.hasAnyRole(
@@ -362,8 +443,9 @@
           </h3>
 
           <p>
-            Tu cuenta está autenticada, pero no posee
-            un rol habilitado dentro de la aplicación.
+            Tu cuenta está autenticada,
+            pero no posee un rol habilitado
+            dentro de la aplicación.
           </p>
 
         </div>
